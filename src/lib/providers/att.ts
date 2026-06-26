@@ -1,40 +1,123 @@
-import { ProxyAgent, fetch as undiciFetch } from "undici";
+import https from "https";
 import type { LineResult } from "@/types";
 
-function getProxiedFetch(): typeof undiciFetch {
-  const raw = process.env.ATT_PROXIES;
-  if (!raw) return undiciFetch;
+const UA =
+  "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36";
 
-  const proxies = raw.split(",").map((p) => p.trim()).filter(Boolean);
-  if (proxies.length === 0) return undiciFetch;
+// Chrome-compatible TLS fingerprint — passes F5 Volterra WAF
+const TLS_OPTS = {
+  ciphers: [
+    "TLS_AES_128_GCM_SHA256",
+    "TLS_AES_256_GCM_SHA384",
+    "TLS_CHACHA20_POLY1305_SHA256",
+    "ECDHE-ECDSA-AES128-GCM-SHA256",
+    "ECDHE-RSA-AES128-GCM-SHA256",
+    "ECDHE-ECDSA-AES256-GCM-SHA384",
+    "ECDHE-RSA-AES256-GCM-SHA384",
+    "ECDHE-ECDSA-CHACHA20-POLY1305",
+    "ECDHE-RSA-CHACHA20-POLY1305",
+    "ECDHE-RSA-AES128-SHA",
+    "ECDHE-RSA-AES256-SHA",
+    "AES128-GCM-SHA256",
+    "AES256-GCM-SHA384",
+    "AES128-SHA",
+    "AES256-SHA",
+  ].join(":"),
+  ecdhCurve: "X25519:P-256:P-384",
+  sigalgs:
+    "ecdsa_secp256r1_sha256:rsa_pss_rsae_sha256:rsa_pkcs1_sha256:" +
+    "ecdsa_secp384r1_sha384:rsa_pss_rsae_sha384:rsa_pkcs1_sha384:" +
+    "rsa_pss_rsae_sha512:rsa_pkcs1_sha512",
+  minVersion: "TLSv1.2" as const,
+  maxVersion: "TLSv1.3" as const,
+};
 
-  const entry = proxies[Math.floor(Math.random() * proxies.length)];
-  const url = entry.startsWith("http") ? entry : (() => {
-    const [host, port, user, pass] = entry.split(":");
-    return `http://${user}:${pass}@${host}:${port}`;
-  })();
-  const dispatcher = new ProxyAgent(url);
-
-  return (url, init) => undiciFetch(url, { ...init, dispatcher });
+interface HttpResult {
+  status: number;
+  body: string;
+  cookies: string[];
 }
+
+function httpsRequest(
+  url: string,
+  opts: {
+    method?: string;
+    headers?: Record<string, string>;
+    body?: string;
+  } = {},
+): Promise<HttpResult> {
+  return new Promise((resolve, reject) => {
+    const parsed = new URL(url);
+    const req = https.request(
+      {
+        hostname: parsed.hostname,
+        path: parsed.pathname + parsed.search,
+        method: opts.method ?? "GET",
+        headers: { "user-agent": UA, ...opts.headers },
+        ...TLS_OPTS,
+      },
+      (res) => {
+        if (
+          res.statusCode &&
+          res.statusCode >= 300 &&
+          res.statusCode < 400 &&
+          res.headers.location
+        ) {
+          return resolve(httpsRequest(res.headers.location, opts));
+        }
+        const cookies = ([] as string[])
+          .concat(res.headers["set-cookie"] ?? [])
+          .map((c) => c.split(";")[0]);
+        let body = "";
+        res.on("data", (d: Buffer) => (body += d));
+        res.on("end", () =>
+          resolve({ status: res.statusCode ?? 0, body, cookies }),
+        );
+      },
+    );
+    req.on("error", reject);
+    if (opts.body) req.write(opts.body);
+    req.end();
+  });
+}
+
+const COMMON_HEADERS = {
+  accept: "application/json, text/plain, */*",
+  "accept-language": "es-MX,es;q=0.9",
+  "content-type": "application/json",
+  origin: "https://att.com.mx",
+  referer: "https://att.com.mx/controlpersonal/",
+  "sec-fetch-dest": "empty",
+  "sec-fetch-mode": "cors",
+  "sec-fetch-site": "same-origin",
+};
 
 const MAX_ATTEMPTS = 3;
 
 async function attempt(curp: string): Promise<LineResult | null> {
   const uuid = crypto.randomUUID();
-  const proxiedFetch = getProxiedFetch();
 
-  const BASE_HEADERS = {
-    "Content-Type": "application/json",
-    "origin": "https://att.com.mx",
-    "referer": "https://att.com.mx/controlpersonal/",
-  };
+  // Step 1: load page to get F5 session cookies
+  const page = await httpsRequest("https://att.com.mx/controlpersonal/", {
+    headers: {
+      accept: "text/html,application/xhtml+xml,*/*",
+      "accept-language": "es-MX,es;q=0.9",
+    },
+  });
 
-  const sessionResponse = await proxiedFetch(
+  if (page.status !== 200) {
+    console.error("AT&T: page load failed, status:", page.status);
+    return null;
+  }
+
+  let cookies = page.cookies.join("; ");
+
+  // Step 2: initlines
+  const session = await httpsRequest(
     "https://att.com.mx/controlpersonal/api/session/initlines",
     {
       method: "POST",
-      headers: BASE_HEADERS,
+      headers: { ...COMMON_HEADERS, ...(cookies ? { cookie: cookies } : {}) },
       body: JSON.stringify({
         operation: "sessionInitLines",
         request: { uuid, timestamp: new Date().toISOString(), msisdn: null },
@@ -42,21 +125,25 @@ async function attempt(curp: string): Promise<LineResult | null> {
     },
   );
 
-  if (!sessionResponse.ok) return null;
+  if (session.status !== 200) {
+    console.error("AT&T: initlines failed, status:", session.status);
+    return null;
+  }
 
-  const sessionData = await sessionResponse.json() as { status: string };
-  if (sessionData.status !== "SUCCESS") return null;
+  const sessionData = JSON.parse(session.body) as { status: string };
+  if (sessionData.status !== "SUCCESS") {
+    console.error("AT&T: initlines status:", sessionData.status);
+    return null;
+  }
 
-  const cookies = sessionResponse.headers
-    .getSetCookie()
-    .map((c: string) => c.split(";")[0])
-    .join("; ");
+  cookies = [...page.cookies, ...session.cookies].join("; ");
 
-  const validationResponse = await proxiedFetch(
+  // Step 3: validatecustomer
+  const validation = await httpsRequest(
     "https://att.com.mx/controlpersonal/api/validatecustomer",
     {
       method: "POST",
-      headers: { ...BASE_HEADERS, cookie: cookies },
+      headers: { ...COMMON_HEADERS, ...(cookies ? { cookie: cookies } : {}) },
       body: JSON.stringify({
         operation: "validateCustomer",
         request: {
@@ -70,9 +157,15 @@ async function attempt(curp: string): Promise<LineResult | null> {
     },
   );
 
-  if (!validationResponse.ok) return null;
+  if (validation.status !== 200) {
+    console.error(
+      "AT&T: validatecustomer failed, status:",
+      validation.status,
+    );
+    return null;
+  }
 
-  const validationData = await validationResponse.json() as {
+  const validationData = JSON.parse(validation.body) as {
     status: string;
     data: {
       resultCode: string;
@@ -88,8 +181,8 @@ async function attempt(curp: string): Promise<LineResult | null> {
 
   if (!isSuccess) {
     console.error(
-      "AT&T customer validation returned non-completed status:",
-      JSON.stringify(validationData, null, 2),
+      "AT&T: validatecustomer non-success:",
+      JSON.stringify(validationData),
     );
     return null;
   }
@@ -99,11 +192,16 @@ async function attempt(curp: string): Promise<LineResult | null> {
   if (data.countLines > 0) {
     const lines: string[] =
       data.customerInfo?.associatedLines
-        ?.map((l: { phoneNumber?: string }) => l.phoneNumber)
-        .filter((p: string | undefined): p is string => Boolean(p))
-        .map((p: string) => `******${p.slice(-4)}`) ?? [];
+        ?.map((l) => l.phoneNumber)
+        .filter((p): p is string => Boolean(p))
+        .map((p) => `******${p.slice(-4)}`) ?? [];
 
-    return { company: "AT&T", lines, isRegistered: true, rawApiResponse: validationData };
+    return {
+      company: "AT&T",
+      lines,
+      isRegistered: true,
+      rawApiResponse: validationData,
+    };
   }
 
   return { company: "AT&T", lines: [], isRegistered: false };
@@ -116,8 +214,12 @@ export async function lookupCURPInATT(curp: string): Promise<LineResult> {
       return null;
     });
     if (result !== null) return result;
-    console.error(`AT&T attempt ${i + 1} failed, retrying with different proxy...`);
+    console.error(`AT&T attempt ${i + 1} failed, retrying...`);
   }
 
-  return { company: "AT&T", lines: [], error: "Failed to validate customer with AT&T" };
+  return {
+    company: "AT&T",
+    lines: [],
+    error: "Failed to validate customer with AT&T",
+  };
 }
