@@ -112,23 +112,35 @@ function httpsRequest(
       path: `${parsed.hostname}:443`,
       headers: {
         host: `${parsed.hostname}:443`,
-        ...(proxy.auth ? { "proxy-authorization": `Basic ${Buffer.from(proxy.auth).toString("base64")}` } : {}),
+        ...(proxy.auth
+          ? { "proxy-authorization": `Basic ${Buffer.from(proxy.auth).toString("base64")}` }
+          : {}),
       },
     });
 
     connectReq.on("connect", (_res, socket) => {
+      socket.on("error", reject);
+
       const tlsSocket = tls.connect({
         socket,
         servername: parsed.hostname,
         ...TLS_OPTS,
       });
-      const req = https.request(
-        { ...reqOpts, createConnection: () => tlsSocket, agent: false },
-        onResponse,
-      );
-      req.on("error", reject);
-      if (opts.body) req.write(opts.body);
-      req.end();
+
+      tlsSocket.on("error", reject);
+      tlsSocket.on("secureConnect", () => {
+        const req = https.request(
+          {
+            ...reqOpts,
+            createConnection: () => tlsSocket,
+            agent: false,
+          },
+          onResponse,
+        );
+        req.on("error", reject);
+        if (opts.body) req.write(opts.body);
+        req.end();
+      });
     });
 
     connectReq.on("error", reject);
