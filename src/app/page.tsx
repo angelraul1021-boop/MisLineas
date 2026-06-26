@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle, ShieldCheck } from "lucide-react";
 import { AnimatePresence } from "motion/react";
 import type React from "react";
 import { useState } from "react";
@@ -54,10 +54,10 @@ export default function MisLineas() {
 
   return (
     <div className="min-h-screen bg-[linear-gradient(180deg,#fafaf9_0%,#f4f4f5_40%,#ffffff_100%)] font-sans text-zinc-900 selection:bg-zinc-900 selection:text-white">
-      <div className="flex items-center justify-center gap-3 border-b border-orange-400/60 bg-[linear-gradient(90deg,#ea580c_0%,#c2410c_100%)] px-4 py-3 text-sm text-white">
-        <AlertTriangle className="w-5 h-5 shrink-0" />
+      <div className="flex items-center justify-center gap-3 border-b border-green-400/60 bg-[linear-gradient(90deg,#16a34a_0%,#15803d_100%)] px-4 py-3 text-sm text-white">
+        <ShieldCheck className="w-5 h-5 shrink-0" />
         <p className="text-center max-w-4xl font-medium">
-          <strong>AT&amp;T volvió a bloquear la herramienta.</strong> Sí, otra vez. Parece costumbre. Ya andamos en eso.
+          <strong>AT&amp;T intentó bloquearnos otra vez.</strong> Lo resolvimos antes de que se dieran cuenta. Todo funciona con normalidad.
         </p>
       </div>
       <div className="flex items-center justify-center gap-3 border-b border-amber-300/60 bg-[linear-gradient(90deg,#d97706_0%,#b45309_100%)] px-4 py-3 text-sm text-white">

@@ -248,6 +248,18 @@ export function ResultsPanel({
         searchQuery={searchQuery}
         onReport={onReport}
       />
+
+      {!loading && (
+        <p className="text-center text-xs text-zinc-400">
+          Herramienta gratuita y sin anuncios.{" "}
+          <a
+            href="/donar"
+            className="underline underline-offset-2 hover:text-zinc-600 transition-colors"
+          >
+            Ayúdanos a mantenerla →
+          </a>
+        </p>
+      )}
     </motion.div>
   );
 }

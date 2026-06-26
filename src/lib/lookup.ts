@@ -7,9 +7,10 @@ export function transformApiResponse(
 
   for (const { provider, result } of responses) {
     if (result.temporaryUnavailable) {
+      const label = result.company || provider;
       lines.push({
-        id: `${provider}-unavailable`,
-        operadora: provider,
+        id: `${provider}-unavailable-${label}`,
+        operadora: label,
         numero: "Temporalmente no disponible",
         isUnavailable: true,
       });
@@ -27,9 +28,10 @@ export function transformApiResponse(
           });
         }
       } else {
+        const label = result.company || provider;
         lines.push({
-          id: `${provider}-error`,
-          operadora: provider,
+          id: `${provider}-error-${label}`,
+          operadora: label,
           numero: "Error al consultar",
           isError: true,
         });
@@ -58,9 +60,10 @@ export function transformApiResponse(
           });
         }
       } else {
+        const label = result.company || provider;
         lines.push({
-          id: `${provider}-notfound`,
-          operadora: provider,
+          id: `${provider}-notfound-${label}`,
+          operadora: label,
           numero: "Sin registro",
           isNotFound: true,
         });
