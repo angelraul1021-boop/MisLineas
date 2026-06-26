@@ -9,8 +9,11 @@ function getProxiedFetch(): typeof undiciFetch {
   if (proxies.length === 0) return undiciFetch;
 
   const entry = proxies[Math.floor(Math.random() * proxies.length)];
-  const [host, port, user, pass] = entry.split(":");
-  const dispatcher = new ProxyAgent(`http://${user}:${pass}@${host}:${port}`);
+  const url = entry.startsWith("http") ? entry : (() => {
+    const [host, port, user, pass] = entry.split(":");
+    return `http://${user}:${pass}@${host}:${port}`;
+  })();
+  const dispatcher = new ProxyAgent(url);
 
   return (url, init) => undiciFetch(url, { ...init, dispatcher });
 }
