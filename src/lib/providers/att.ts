@@ -1,5 +1,24 @@
+import http from "http";
 import https from "https";
+import tls from "tls";
 import type { LineResult } from "@/types";
+
+function getProxy(): { host: string; port: number; auth?: string } | null {
+  const raw = process.env.ATT_PROXIES;
+  if (!raw) return null;
+  const entries = raw.split(",").map((p) => p.trim()).filter(Boolean);
+  if (entries.length === 0) return null;
+  const entry = entries[Math.floor(Math.random() * entries.length)];
+  const url = entry.startsWith("http") ? new URL(entry) : (() => {
+    const [host, port, user, pass] = entry.split(":");
+    return new URL(`http://${user}:${pass}@${host}:${port}`);
+  })();
+  return {
+    host: url.hostname,
+    port: parseInt(url.port),
+    auth: url.username ? `${url.username}:${url.password}` : undefined,
+  };
+}
 
 const UA =
   "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36";
@@ -48,36 +67,72 @@ function httpsRequest(
 ): Promise<HttpResult> {
   return new Promise((resolve, reject) => {
     const parsed = new URL(url);
-    const req = https.request(
-      {
-        hostname: parsed.hostname,
-        path: parsed.pathname + parsed.search,
-        method: opts.method ?? "GET",
-        headers: { "user-agent": UA, ...opts.headers },
+    const proxy = getProxy();
+
+    const onResponse = (res: http.IncomingMessage) => {
+      if (
+        res.statusCode &&
+        res.statusCode >= 300 &&
+        res.statusCode < 400 &&
+        res.headers.location
+      ) {
+        return resolve(httpsRequest(res.headers.location, opts));
+      }
+      const cookies = ([] as string[])
+        .concat(res.headers["set-cookie"] ?? [])
+        .map((c) => c.split(";")[0]);
+      let body = "";
+      res.on("data", (d: Buffer) => (body += d));
+      res.on("end", () =>
+        resolve({ status: res.statusCode ?? 0, body, cookies }),
+      );
+    };
+
+    const reqOpts = {
+      hostname: parsed.hostname,
+      path: parsed.pathname + parsed.search,
+      method: opts.method ?? "GET",
+      headers: { "user-agent": UA, ...opts.headers },
+      ...TLS_OPTS,
+    };
+
+    if (!proxy) {
+      const req = https.request(reqOpts, onResponse);
+      req.on("error", reject);
+      if (opts.body) req.write(opts.body);
+      req.end();
+      return;
+    }
+
+    // CONNECT tunnel through proxy
+    const connectReq = http.request({
+      host: proxy.host,
+      port: proxy.port,
+      method: "CONNECT",
+      path: `${parsed.hostname}:443`,
+      headers: {
+        host: `${parsed.hostname}:443`,
+        ...(proxy.auth ? { "proxy-authorization": `Basic ${Buffer.from(proxy.auth).toString("base64")}` } : {}),
+      },
+    });
+
+    connectReq.on("connect", (_res, socket) => {
+      const tlsSocket = tls.connect({
+        socket,
+        servername: parsed.hostname,
         ...TLS_OPTS,
-      },
-      (res) => {
-        if (
-          res.statusCode &&
-          res.statusCode >= 300 &&
-          res.statusCode < 400 &&
-          res.headers.location
-        ) {
-          return resolve(httpsRequest(res.headers.location, opts));
-        }
-        const cookies = ([] as string[])
-          .concat(res.headers["set-cookie"] ?? [])
-          .map((c) => c.split(";")[0]);
-        let body = "";
-        res.on("data", (d: Buffer) => (body += d));
-        res.on("end", () =>
-          resolve({ status: res.statusCode ?? 0, body, cookies }),
-        );
-      },
-    );
-    req.on("error", reject);
-    if (opts.body) req.write(opts.body);
-    req.end();
+      });
+      const req = https.request(
+        { ...reqOpts, createConnection: () => tlsSocket, agent: false },
+        onResponse,
+      );
+      req.on("error", reject);
+      if (opts.body) req.write(opts.body);
+      req.end();
+    });
+
+    connectReq.on("error", reject);
+    connectReq.end();
   });
 }
 
