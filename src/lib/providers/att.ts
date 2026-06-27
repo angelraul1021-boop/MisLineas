@@ -1,9 +1,5 @@
 import type { Page, Browser } from "puppeteer-core";
-import puppeteerExtra from "puppeteer-extra";
-import StealthPlugin from "puppeteer-extra-plugin-stealth";
 import type { LineResult } from "@/types";
-
-puppeteerExtra.use(StealthPlugin());
 
 function getProxy(): string | null {
   const raw = process.env.ATT_PROXIES;
@@ -17,6 +13,11 @@ function getProxy(): string | null {
 }
 
 async function launchBrowser(proxy: string | null): Promise<Browser> {
+  // Dynamic imports keep puppeteer-extra and stealth out of the Next.js bundle.
+  // serverExternalPackages is not enough because Turbopack still traces CJS deps.
+  const { default: puppeteerExtra } = await import("puppeteer-extra");
+  const { default: StealthPlugin } = await import("puppeteer-extra-plugin-stealth");
+  puppeteerExtra.use(StealthPlugin());
 
   const proxyArg = proxy ? [`--proxy-server=${new URL(proxy).origin}`] : [];
   const baseArgs = ["--no-sandbox", "--disable-setuid-sandbox", "--window-size=1280,800", ...proxyArg];
