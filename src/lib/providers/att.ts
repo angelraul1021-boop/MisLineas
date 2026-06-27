@@ -1,6 +1,8 @@
 import type { Page, Browser } from "puppeteer-core";
 import type { LineResult } from "@/types";
 
+const UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36";
+
 function getProxy(): string | null {
   const raw = process.env.ATT_PROXIES;
   if (!raw) return null;
@@ -13,18 +15,21 @@ function getProxy(): string | null {
 }
 
 async function launchBrowser(proxy: string | null): Promise<Browser> {
-  // Dynamic imports keep puppeteer-extra and stealth out of the Next.js bundle.
-  // serverExternalPackages is not enough because Turbopack still traces CJS deps.
-  const { default: puppeteerExtra } = await import("puppeteer-extra");
-  const { default: StealthPlugin } = await import("puppeteer-extra-plugin-stealth");
-  puppeteerExtra.use(StealthPlugin());
+  const { default: puppeteer } = await import("puppeteer-core");
 
   const proxyArg = proxy ? [`--proxy-server=${new URL(proxy).origin}`] : [];
-  const baseArgs = ["--no-sandbox", "--disable-setuid-sandbox", "--window-size=1280,800", ...proxyArg];
+  const baseArgs = [
+    "--no-sandbox",
+    "--disable-setuid-sandbox",
+    "--window-size=1280,800",
+    "--disable-blink-features=AutomationControlled",
+    `--user-agent=${UA}`,
+    ...proxyArg,
+  ];
 
   if (process.env.NODE_ENV === "development") {
     const executablePath = process.env.CHROME_PATH ?? "/usr/bin/chromium";
-    return puppeteerExtra.launch({ executablePath, headless: true, args: baseArgs });
+    return puppeteer.launch({ executablePath, headless: true, args: baseArgs });
   }
 
   const { default: chromium } = await import("@sparticuz/chromium-min");
@@ -32,10 +37,10 @@ async function launchBrowser(proxy: string | null): Promise<Browser> {
     "https://github.com/Sparticuz/chromium/releases/download/v149.0.0/chromium-v149.0.0-pack.tar",
   );
 
-  return puppeteerExtra.launch({
+  return puppeteer.launch({
     executablePath,
     headless: true,
-    args: [...chromium.args, ...proxyArg, "--window-size=1280,800"],
+    args: [...chromium.args, ...baseArgs],
   });
 }
 
@@ -57,7 +62,6 @@ interface PoolSlot {
 }
 
 const pool: PoolSlot[] = [];
-let poolInitializing = false;
 const waitQueue: Array<() => void> = [];
 
 async function warmPage(proxy: string | null): Promise<PoolSlot> {
@@ -73,6 +77,17 @@ async function warmPage(proxy: string | null): Promise<PoolSlot> {
   }
 
   await page.setBypassCSP(true);
+
+  // Evasions to prevent Shape Security from detecting headless Chrome
+  await page.evaluateOnNewDocument(() => {
+    delete Object.getPrototypeOf(navigator).webdriver;
+    Object.defineProperty(window, "chrome", {
+      writable: true, enumerable: true, configurable: false,
+      value: { runtime: {} },
+    });
+    Object.defineProperty(navigator, "languages", { get: () => ["es-MX", "es", "en-US", "en"] });
+    Object.defineProperty(navigator, "plugins", { get: () => [1, 2, 3, 4, 5] });
+  });
 
   // Block cosmetic resources — scripts must pass so Shape initializes
   await page.setRequestInterception(true);

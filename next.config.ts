@@ -26,13 +26,7 @@ const nextConfig: NextConfig = {
   reactCompiler: true,
   serverExternalPackages: [
     "puppeteer-core",
-    "puppeteer-extra",
-    "puppeteer-extra-plugin",
-    "puppeteer-extra-plugin-stealth",
     "@sparticuz/chromium-min",
-    "merge-deep",
-    "clone-deep",
-    "is-plain-object",
   ],
   async headers() {
     return [
