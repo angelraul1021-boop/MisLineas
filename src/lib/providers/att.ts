@@ -269,12 +269,6 @@ async function query(curp: string): Promise<LineResult | null> {
   }
 }
 
-// Pre-warm the pool as soon as this module loads so the first real request
-// doesn't pay the ~15s browser startup cost.
-warmPage(getProxy())
-  .then((slot) => pool.push(slot))
-  .catch((err) => console.warn("AT&T: initial warm-up failed:", err));
-
 const MAX_ATTEMPTS = 3;
 
 export async function lookupCURPInATT(curp: string): Promise<LineResult> {
