@@ -99,12 +99,20 @@ async function warmPage(proxy: string | null): Promise<PoolSlot> {
     }
   });
 
+  // Use domcontentloaded so we don't wait for every network request to settle.
+  // Then we poll until the Shape script has set its session cookie, which means
+  // it has finished initializing and the WAF will accept API calls.
   await page.goto("https://att.com.mx/controlpersonal/", {
-    waitUntil: "networkidle2",
-    timeout: 30000,
+    waitUntil: "domcontentloaded",
+    timeout: 50000,
   });
 
-  // Shape is ready by networkidle2 — no extra wait needed
+  // Wait for Shape to set OClmoOot (its session cookie) — up to 15s
+  await page.waitForFunction(
+    () => document.cookie.includes("OClmoOot"),
+    { timeout: 15000 },
+  );
+
   return { page, browser, uses: 0, createdAt: Date.now(), busy: false };
 }
 
