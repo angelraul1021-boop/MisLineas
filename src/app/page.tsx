@@ -57,7 +57,7 @@ export default function MisLineas() {
       <div className="flex items-center justify-center gap-3 border-b border-blue-400/60 bg-[linear-gradient(90deg,#2563eb_0%,#1d4ed8_100%)] px-4 py-3 text-sm text-white">
         <Info className="w-5 h-5 shrink-0" />
         <p className="text-center max-w-4xl font-medium">
-          <strong>AT&amp;T.</strong> AT&amp;T y nosotros tuvimos nuestras diferencias, pero ya hicimos las paces. Lo seguimos de cerca.
+          AT&amp;T y nosotros tuvimos nuestras diferencias, pero ya hicimos las paces. Lo seguimos de cerca.
         </p>
       </div>
       <div className="flex items-center justify-center gap-3 border-b border-amber-300/60 bg-[linear-gradient(90deg,#d97706_0%,#b45309_100%)] px-4 py-3 text-sm text-white">
