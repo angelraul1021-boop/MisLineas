@@ -43,5 +43,8 @@
       "sharp",
       "unrs-resolver"
     ]
+  },
+  "overrides": {
+    "is-plain-object": "^2.0.4"
   }
 }
