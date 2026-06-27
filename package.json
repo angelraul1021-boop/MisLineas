@@ -10,6 +10,7 @@
     "format": "biome format --write"
   },
   "dependencies": {
+    "@sparticuz/chromium-min": "^149.0.0",
     "@vercel/analytics": "^2.0.1",
     "clsx": "^2.1.1",
     "framer-motion": "^12.38.0",
@@ -17,6 +18,9 @@
     "lucide-react": "^0.553.0",
     "motion": "^12.23.24",
     "next": "16.2.6",
+    "puppeteer-core": "^25.2.1",
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "tailwind-merge": "^3.3.1",
