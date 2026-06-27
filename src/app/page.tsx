@@ -57,7 +57,7 @@ export default function MisLineas() {
       <div className="flex items-center justify-center gap-3 border-b border-red-900/60 bg-[linear-gradient(90deg,#7f1d1d_0%,#991b1b_100%)] px-4 py-3 text-sm text-white">
         <Ban className="w-5 h-5 shrink-0" />
         <p className="text-center max-w-4xl font-medium">
-          AT&amp;T nos bloqueó por <strong>4ª vez</strong>. Ellos bloquean, nosotros le buscamos. Seguimos en ello. 🕵️
+          AT&amp;T decidió ponerse difícil... otra vez. Lo apagamos para no gastar de más mientras encontramos cómo saltarnos su candado. 🔧
         </p>
       </div>
       <div className="flex items-center justify-center gap-3 border-b border-amber-300/60 bg-[linear-gradient(90deg,#d97706_0%,#b45309_100%)] px-4 py-3 text-sm text-white">

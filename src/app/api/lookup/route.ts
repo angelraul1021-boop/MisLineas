@@ -7,7 +7,6 @@ import {
   lookupCURPINYoMobile,
   lookupCURPInABIB,
   lookupCURPInAltanMVNO,
-  lookupCURPInATT,
   lookupCURPInBeneleit,
   lookupCURPInDialo,
   lookupCURPInIENTC,
@@ -27,10 +26,13 @@ const providers: Array<{
   provider: string;
   lookupFunction: (curp: string) => Promise<LineResult | LineResult[]>;
 }> = [
-  {
-    provider: "AT&T",
-    lookupFunction: lookupCURPInATT,
-  },
+  // {
+  //   provider: "AT&T",
+  //   lookupFunction: lookupCURPInATT,
+  //   // Deshabilitado: AT&T le puso candado, alarma, foso y cocodrilo a su portal.
+  //   // Cada request cuesta un ojo de la cara en proxies residenciales y aun así
+  //   // nos manda a volar con 403. RIP billetera, fue un honor. 💸
+  // },
   {
     provider: "Telcel",
     lookupFunction: lookupCURPInTelcel,
