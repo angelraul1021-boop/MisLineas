@@ -57,7 +57,7 @@ export default function MisLineas() {
       <div className="flex items-center justify-center gap-3 border-b border-blue-400/60 bg-[linear-gradient(90deg,#2563eb_0%,#1d4ed8_100%)] px-4 py-3 text-sm text-white">
         <Info className="w-5 h-5 shrink-0" />
         <p className="text-center max-w-4xl font-medium">
-          <strong>AT&amp;T.</strong> Al parecer de momento todo bien, pero estaremos checando.
+          <strong>AT&amp;T.</strong> Después de 3 bloqueos seguidos, al parecer ya jala. Estaremos con un ojo abierto por si las dudas.
         </p>
       </div>
       <div className="flex items-center justify-center gap-3 border-b border-amber-300/60 bg-[linear-gradient(90deg,#d97706_0%,#b45309_100%)] px-4 py-3 text-sm text-white">
