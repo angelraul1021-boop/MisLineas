@@ -91,11 +91,17 @@ async function attempt(
       { timeout: 15000 },
     );
 
+    // Give Shape's JS challenge time to finalize the cookie value
+    await new Promise((r) => setTimeout(r, 2000));
+
     const result = await page.evaluate(async (curp: string) => {
       const uuid = crypto.randomUUID();
       const h = {
         accept: "application/json, text/plain, */*",
+        "accept-language": "es-MX,es;q=0.9,en-US;q=0.8,en;q=0.7",
         "content-type": "application/json",
+        origin: "https://att.com.mx",
+        referer: "https://att.com.mx/controlpersonal/",
       };
 
       const sessionRes = await fetch(
@@ -103,6 +109,7 @@ async function attempt(
         {
           method: "POST",
           headers: h,
+          credentials: "include",
           body: JSON.stringify({
             operation: "sessionInitLines",
             request: {
@@ -121,11 +128,15 @@ async function attempt(
         return { error: `initlines status: ${sessionData.status}` };
       }
 
+      // Small pause between requests to avoid Shape rate-limiting the session
+      await new Promise((r) => setTimeout(r, 500));
+
       const validationRes = await fetch(
         "/controlpersonal/api/validatecustomer",
         {
           method: "POST",
           headers: h,
+          credentials: "include",
           body: JSON.stringify({
             operation: "validateCustomer",
             request: {
@@ -140,7 +151,8 @@ async function attempt(
       );
 
       if (!validationRes.ok) {
-        return { error: `validatecustomer ${validationRes.status}` };
+        const body = await validationRes.text().catch(() => "");
+        return { error: `validatecustomer ${validationRes.status}: ${body.slice(0, 200)}` };
       }
 
       return { data: await validationRes.json() };
