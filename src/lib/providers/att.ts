@@ -34,7 +34,7 @@ async function launchBrowser(proxy: string | null): Promise<Browser> {
 
   const { default: chromium } = await import("@sparticuz/chromium-min");
   const executablePath = await chromium.executablePath(
-    "https://github.com/Sparticuz/chromium/releases/download/v149.0.0/chromium-v149.0.0-pack.tar",
+    "https://github.com/Sparticuz/chromium/releases/download/v149.0.0/chromium-v149.0.0-pack.x64.tar",
   );
 
   return puppeteer.launch({
