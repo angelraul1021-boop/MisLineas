@@ -261,11 +261,11 @@ async function attempt(curp: string): Promise<LineResult | null> {
 export async function lookupCURPInATT(curp: string): Promise<LineResult> {
   for (let i = 0; i < MAX_ATTEMPTS; i++) {
     const result = await attempt(curp).catch((err) => {
-      console.error(`AT&T attempt ${i + 1} threw:`, err);
+      console.warn(`AT&T attempt ${i + 1} threw:`, err);
       return null;
     });
     if (result !== null) return result;
-    console.error(`AT&T attempt ${i + 1} failed, retrying...`);
+    console.warn(`AT&T attempt ${i + 1} failed, retrying...`);
   }
 
   return {
