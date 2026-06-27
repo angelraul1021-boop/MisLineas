@@ -143,7 +143,7 @@ const COMMON_HEADERS = {
   "sec-fetch-site": "same-origin",
 };
 
-const MAX_ATTEMPTS = 3;
+const MAX_ATTEMPTS = 5;
 
 async function attempt(curp: string): Promise<LineResult | null> {
   const uuid = crypto.randomUUID();
