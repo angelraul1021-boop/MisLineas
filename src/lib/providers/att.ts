@@ -113,6 +113,17 @@ async function warmPage(proxy: string | null): Promise<PoolSlot> {
     { timeout: 15000 },
   );
 
+  // Diagnóstico temporal: loguear fingerprint que ve Shape
+  const fp = await page.evaluate(() => ({
+    webdriver: (navigator as Navigator & { webdriver?: boolean }).webdriver,
+    headlessUA: navigator.userAgent.includes("HeadlessChrome"),
+    ua: navigator.userAgent,
+    plugins: navigator.plugins.length,
+    chrome: !!(window as Window & { chrome?: unknown }).chrome,
+    cookies: document.cookie.split(";").map(c => c.trim().split("=")[0]),
+  }));
+  console.log("AT&T fingerprint:", JSON.stringify(fp));
+
   return { page, browser, uses: 0, createdAt: Date.now(), busy: false };
 }
 
