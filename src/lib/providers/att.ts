@@ -14,39 +14,29 @@ function getProxy(): string | null {
   return `http://${user}:${pass}@${host}:${port}`;
 }
 
-async function attempt(curp: string): Promise<LineResult | null> {
+async function attempt(
+  curp: string,
+  executablePath: string,
+  extraArgs: string[],
+): Promise<LineResult | null> {
   const proxy = getProxy();
-
   const { default: puppeteer } = await import("puppeteer-core");
 
   const proxyArg = proxy ? [`--proxy-server=${new URL(proxy).origin}`] : [];
-  const baseArgs = [
+  const args = [
     "--no-sandbox",
     "--disable-setuid-sandbox",
     "--window-size=1280,800",
     "--disable-blink-features=AutomationControlled",
     `--user-agent=${UA}`,
+    ...extraArgs,
     ...proxyArg,
   ];
-
-  let executablePath: string;
-  let launchArgs: string[];
-
-  if (process.env.NODE_ENV === "development") {
-    executablePath = process.env.CHROME_PATH ?? "/usr/bin/chromium";
-    launchArgs = baseArgs;
-  } else {
-    const { default: chromium } = await import("@sparticuz/chromium-min");
-    executablePath = await chromium.executablePath(
-      "https://github.com/Sparticuz/chromium/releases/download/v149.0.0/chromium-v149.0.0-pack.x64.tar",
-    );
-    launchArgs = [...chromium.args, ...baseArgs];
-  }
 
   const browser = await puppeteer.launch({
     executablePath,
     headless: true,
-    args: launchArgs,
+    args,
   });
 
   try {
@@ -206,11 +196,29 @@ async function attempt(curp: string): Promise<LineResult | null> {
 const MAX_ATTEMPTS = 3;
 
 export async function lookupCURPInATT(curp: string): Promise<LineResult> {
+  // Resolve the executable once — downloading it on every attempt causes ETXTBSY
+  // when concurrent writes race against spawns of the same binary.
+  let executablePath: string;
+  let extraArgs: string[];
+
+  if (process.env.NODE_ENV === "development") {
+    executablePath = process.env.CHROME_PATH ?? "/usr/bin/chromium";
+    extraArgs = [];
+  } else {
+    const { default: chromium } = await import("@sparticuz/chromium-min");
+    executablePath = await chromium.executablePath(
+      "https://github.com/Sparticuz/chromium/releases/download/v149.0.0/chromium-v149.0.0-pack.x64.tar",
+    );
+    extraArgs = chromium.args;
+  }
+
   for (let i = 0; i < MAX_ATTEMPTS; i++) {
-    const result = await attempt(curp).catch((err) => {
-      console.warn(`AT&T attempt ${i + 1} threw:`, err);
-      return null;
-    });
+    const result = await attempt(curp, executablePath, extraArgs).catch(
+      (err) => {
+        console.warn(`AT&T attempt ${i + 1} threw:`, err);
+        return null;
+      },
+    );
     if (result !== null) return result;
     console.warn(`AT&T attempt ${i + 1} failed, retrying...`);
   }
