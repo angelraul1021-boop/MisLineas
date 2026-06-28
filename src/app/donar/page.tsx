@@ -66,12 +66,12 @@ export default function DonarPage() {
               <div className="rounded-xl border border-zinc-200 bg-white p-4 text-left shadow-sm">
                 <Shield className="w-4 h-4 text-zinc-400 mb-2" />
                 <p className="text-xs text-zinc-500">Proxies</p>
-                <p className="text-lg font-bold text-zinc-900">$20 USD</p>
+                <p className="text-lg font-bold text-zinc-900">$10 USD</p>
               </div>
             </div>
             <div className="rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3 flex justify-between items-center">
               <span className="text-sm text-zinc-500">Total mensual</span>
-              <span className="text-sm font-bold text-zinc-900">$40 USD</span>
+              <span className="text-sm font-bold text-zinc-900">$30 USD</span>
             </div>
           </div>
 
