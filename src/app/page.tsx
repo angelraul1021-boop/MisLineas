@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertTriangle, Ban } from "lucide-react";
+import { AlertTriangle } from "lucide-react";
 import { AnimatePresence } from "motion/react";
 import type React from "react";
 import { useState } from "react";
@@ -54,12 +54,6 @@ export default function MisLineas() {
 
   return (
     <div className="min-h-screen bg-[linear-gradient(180deg,#fafaf9_0%,#f4f4f5_40%,#ffffff_100%)] font-sans text-zinc-900 selection:bg-zinc-900 selection:text-white">
-      <div className="flex items-center justify-center gap-3 border-b border-red-900/60 bg-[linear-gradient(90deg,#7f1d1d_0%,#991b1b_100%)] px-4 py-3 text-sm text-white">
-        <Ban className="w-5 h-5 shrink-0" />
-        <p className="text-center max-w-4xl font-medium">
-          AT&amp;T decidió ponerse difícil... otra vez. Lo apagamos para no gastar de más mientras encontramos cómo saltarnos su candado. 🔧
-        </p>
-      </div>
       <div className="flex items-center justify-center gap-3 border-b border-amber-300/60 bg-[linear-gradient(90deg,#d97706_0%,#b45309_100%)] px-4 py-3 text-sm text-white">
         <AlertTriangle className="w-5 h-5 shrink-0" />
         <p className="text-center max-w-4xl font-medium">
