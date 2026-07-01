@@ -79,7 +79,11 @@ export const OPERATORS: OperatorEntry[] = [
   { name: "Link Móvil", status: "supported" },
   { name: "Kolors Mobile", status: "supported" },
   { name: "Maifon", status: "supported" },
-  { name: "Mega Móvil", status: "supported" },
+  {
+    name: "Mega Móvil",
+    status: "paused",
+    reason: "WAF bloquea peticiones desde servidor.",
+  },
   { name: "México Móvil", status: "supported" },
   { name: "Mexfon", status: "supported" },
   { name: "Mi móvil", status: "paused", reason: "Recaptcha bloquea peticiones desde servidor." },
