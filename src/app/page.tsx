@@ -74,6 +74,17 @@ export default function MisLineas() {
         </p>
       </div>
 
+      <div className="flex items-center justify-center gap-3 border-b border-amber-300/60 bg-[linear-gradient(90deg,#d97706_0%,#b45309_100%)] px-4 py-3 text-sm text-white">
+        <AlertTriangle className="w-5 h-5 shrink-0" />
+        <p className="text-center max-w-4xl font-medium">
+          <strong>Aviso Mobig.</strong> Mobig cambió recientemente el formato
+          de respuesta de su sistema de consulta, lo que ocasionó falsos
+          positivos (líneas marcadas como registradas sin estarlo). Ya
+          corregimos el problema, pero si tu resultado con Mobig no coincide
+          con lo esperado, repórtalo.
+        </p>
+      </div>
+
       <div aria-live="polite" aria-atomic="true" className="sr-only">
         {liveMessage}
       </div>

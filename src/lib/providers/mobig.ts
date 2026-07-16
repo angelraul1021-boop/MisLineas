@@ -107,7 +107,8 @@ export async function lookupCURPINMobig(curp: string): Promise<LineResult> {
     };
   }
 
-  if (Array.isArray(data.data) && data.data.length === 0) {
+  const msisdns = data?.data?.msisdns;
+  if (Array.isArray(msisdns) && msisdns.length === 0) {
     return {
       company: "Mobig",
       lines: [],
