@@ -107,7 +107,9 @@ export async function lookupCURPINMobig(curp: string): Promise<LineResult> {
     };
   }
 
-  const msisdns = data?.data?.msisdns;
+  // Mobig has flip-flopped between `data.data` being `[]` directly and
+  // `{ last_digits, msisdns }` with `msisdns` being the empty array — accept both shapes.
+  const msisdns = Array.isArray(data?.data) ? data.data : data?.data?.msisdns;
   if (Array.isArray(msisdns) && msisdns.length === 0) {
     return {
       company: "Mobig",
