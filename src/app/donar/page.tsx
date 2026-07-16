@@ -43,7 +43,7 @@ export default function DonarPage() {
               <Users className="w-4 h-4 text-zinc-400" />
               <span className="text-sm font-medium text-zinc-700">
                 Más de{" "}
-                <span className="font-bold text-zinc-950">60,000</span>{" "}
+                <span className="font-bold text-zinc-950">100,000</span>{" "}
                 consultas realizadas
               </span>
             </div>

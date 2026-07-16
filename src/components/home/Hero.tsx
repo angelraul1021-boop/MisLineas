@@ -63,7 +63,7 @@ export function Hero() {
           transition={{ delay: 0.15 }}
           className="mx-auto max-w-2xl text-sm font-semibold tracking-wide text-zinc-400 uppercase"
         >
-          <AnimatedCount target={60000} /> consultas realizadas
+          <AnimatedCount target={100000} /> consultas realizadas
         </motion.p>
         <p className="mx-auto max-w-2xl text-base leading-7 text-zinc-600 sm:text-lg">
           Ingresa tu CURP y revisa si hay números vinculados contigo, sin andar
