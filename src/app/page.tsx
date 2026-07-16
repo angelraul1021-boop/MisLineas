@@ -74,7 +74,7 @@ export default function MisLineas() {
         </p>
       </div>
 
-      <div className="flex items-center justify-center gap-3 border-b border-amber-300/60 bg-[linear-gradient(90deg,#d97706_0%,#b45309_100%)] px-4 py-3 text-sm text-white">
+      <div className="flex items-center justify-center gap-3 border-b border-red-400/60 bg-[linear-gradient(90deg,#dc2626_0%,#991b1b_100%)] px-4 py-3 text-sm text-white">
         <AlertTriangle className="w-5 h-5 shrink-0" />
         <p className="text-center max-w-4xl font-medium">
           <strong>Aviso Mobig.</strong> Mobig cambió recientemente el formato
