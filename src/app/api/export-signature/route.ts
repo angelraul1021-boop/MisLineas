@@ -2,6 +2,7 @@ export const runtime = "edge";
 
 import type { NextRequest } from "next/server";
 import { z } from "zod";
+import { corsHeaders, corsPreflight } from "@/lib/cors";
 import type { ExportEvidencePayload, ExportIntegrity } from "@/types";
 
 const exportPayloadSchema = z.object({
@@ -83,12 +84,20 @@ async function signPayload(payload: string, secret: string): Promise<string> {
   return toBase64(new Uint8Array(signature));
 }
 
+export async function OPTIONS(req: NextRequest) {
+  return corsPreflight(req);
+}
+
 export async function POST(req: NextRequest) {
+  const cors = corsHeaders(req);
   const body = await req.json().catch(() => null);
   const parsed = exportPayloadSchema.safeParse(body);
 
   if (!parsed.success) {
-    return Response.json({ error: "Invalid export payload" }, { status: 400 });
+    return Response.json(
+      { error: "Invalid export payload" },
+      { status: 400, headers: cors },
+    );
   }
 
   const payload = parsed.data as ExportEvidencePayload;
@@ -122,5 +131,5 @@ export async function POST(req: NextRequest) {
     };
   }
 
-  return Response.json(integrity);
+  return Response.json(integrity, { headers: cors });
 }
