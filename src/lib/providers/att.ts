@@ -1,25 +1,15 @@
+import { getResidentialProxyUrl } from "@/lib/proxy";
 import type { LineResult } from "@/types";
 
 const UA =
   "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36";
-
-function getProxy(): string | null {
-  const raw = process.env.ATT_PROXIES;
-  if (!raw) return null;
-  const entries = raw.split(",").map((p) => p.trim()).filter(Boolean);
-  if (entries.length === 0) return null;
-  const entry = entries[Math.floor(Math.random() * entries.length)];
-  if (entry.startsWith("http")) return entry;
-  const [host, port, user, pass] = entry.split(":");
-  return `http://${user}:${pass}@${host}:${port}`;
-}
 
 async function attempt(
   curp: string,
   executablePath: string,
   extraArgs: string[],
 ): Promise<LineResult | null> {
-  const proxy = getProxy();
+  const proxy = getResidentialProxyUrl();
   const { default: puppeteer } = await import("puppeteer-core");
 
   const proxyArg = proxy ? [`--proxy-server=${new URL(proxy).origin}`] : [];
@@ -213,8 +203,8 @@ export async function lookupCURPInATT(curp: string): Promise<LineResult> {
   let executablePath: string;
   let extraArgs: string[];
 
-  if (process.env.NODE_ENV === "development") {
-    executablePath = process.env.CHROME_PATH ?? "/usr/bin/chromium";
+  if (process.env.CHROME_PATH) {
+    executablePath = process.env.CHROME_PATH;
     extraArgs = [];
   } else {
     const { default: chromium } = await import("@sparticuz/chromium-min");

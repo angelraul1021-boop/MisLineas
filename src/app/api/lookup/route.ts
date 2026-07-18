@@ -3,6 +3,7 @@ export const maxDuration = 120;
 
 import type { NextRequest } from "next/server";
 import {
+  lookupCURPInATT,
   lookupCURPINMobig,
   lookupCURPINYoMobile,
   lookupCURPInABIB,
@@ -16,9 +17,10 @@ import {
   lookupCURPInFreedompop,
   loookupCURPINWeeex,
   loookupCURPInVirginMobile,
-  lookupCURPInMegamovil,
+  loookupCURPInTalentoNetMVNO,
 } from "@/lib/providers";
 import { validateCURP } from "@/lib/providers/curp";
+import { corsHeaders, corsPreflight } from "@/lib/cors";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { stripCURPs } from "@/lib/sanitize";
 import type { LineResult } from "@/types";
@@ -27,13 +29,10 @@ const providers: Array<{
   provider: string;
   lookupFunction: (curp: string) => Promise<LineResult | LineResult[]>;
 }> = [
-  // {
-  //   provider: "AT&T",
-  //   lookupFunction: lookupCURPInATT,
-  //   // Deshabilitado: AT&T le puso candado, alarma, foso y cocodrilo a su portal.
-  //   // Cada request cuesta un ojo de la cara en proxies residenciales y aun así
-  //   // nos manda a volar con 403. RIP billetera, fue un honor. 💸
-  // },
+  {
+    provider: "AT&T",
+    lookupFunction: lookupCURPInATT,
+  },
   {
     provider: "Telcel",
     lookupFunction: lookupCURPInTelcel,
@@ -62,10 +61,12 @@ const providers: Array<{
     provider: "Logistica ACN (FedeGo!, Flash Mobile, Dua)",
     lookupFunction: lookupCURPInLogisticaACN,
   },
-  {
-    provider: "Mega Móvil",
-    lookupFunction: lookupCURPInMegamovil,
-  },
+  // {
+  //   provider: "Mega Móvil",
+  //   lookupFunction: lookupCURPInMegamovil,
+  //   // Disabled: their API only confirms a specific CURP+phone-number
+  //   // combination, there's no endpoint to list lines linked to a CURP.
+  // },
   {
     provider: "Mirlo",
     lookupFunction: lookupCURPInMirlo,
@@ -84,11 +85,10 @@ const providers: Array<{
   //   lookupFunction: lookupCURPInSorcel,
   //   // Disabled: Cloudflare JS challenge blocks server-side requests
   // },
-  // {
-  //   provider: "TalentoNet (Newww, Red Aguila, Link Móvil)",
-  //   lookupFunction: loookupCURPInTalentoNetMVNO,
-  //   // Disabled: ConnectTimeoutError on core.newww.mx:443
-  // },
+  {
+    provider: "TalentoNet (Newww, Red Aguila, Link Móvil)",
+    lookupFunction: loookupCURPInTalentoNetMVNO,
+  },
   {
     provider: "Virgin Mobile",
     lookupFunction: loookupCURPInVirginMobile,
@@ -107,7 +107,12 @@ const providers: Array<{
   // },
 ];
 
+export async function OPTIONS(req: NextRequest) {
+  return corsPreflight(req);
+}
+
 export async function POST(req: NextRequest) {
+  const cors = corsHeaders(req);
   const ip =
     req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
   const { allowed, remaining } = checkRateLimit(ip);
@@ -115,7 +120,7 @@ export async function POST(req: NextRequest) {
   if (!allowed) {
     return new Response(JSON.stringify({ error: "Too many requests" }), {
       status: 429,
-      headers: { "Retry-After": "60" },
+      headers: { ...cors, "Retry-After": "60" },
     });
   }
 
@@ -124,7 +129,7 @@ export async function POST(req: NextRequest) {
   if (!curp || typeof curp !== "string") {
     return new Response(
       JSON.stringify({ error: "CURP is required and must be a string" }),
-      { status: 400 },
+      { status: 400, headers: cors },
     );
   }
 
@@ -133,6 +138,7 @@ export async function POST(req: NextRequest) {
   if (!isValidCURP) {
     return new Response(JSON.stringify({ error: "Invalid CURP format" }), {
       status: 400,
+      headers: cors,
     });
   }
 
@@ -196,6 +202,7 @@ export async function POST(req: NextRequest) {
 
   return new Response(stream, {
     headers: {
+      ...cors,
       "Content-Type": "application/x-ndjson",
       "Cache-Control": "no-cache",
       Connection: "keep-alive",

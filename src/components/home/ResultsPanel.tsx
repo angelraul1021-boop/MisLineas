@@ -12,6 +12,7 @@ import {
   buildJsonExport,
   getExportFilename,
 } from "@/lib/export";
+import { API_URL } from "@/lib/utils";
 import type { DisplayLine, ExportIntegrity, FilterTab } from "@/types";
 
 interface Props {
@@ -112,7 +113,7 @@ export function ResultsPanel({
   const getIntegrity = async (
     payload: ReturnType<typeof buildExportEvidencePayload>,
   ): Promise<ExportIntegrity> => {
-    const response = await fetch("/api/export-signature", {
+    const response = await fetch(`${API_URL}/api/export-signature`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),

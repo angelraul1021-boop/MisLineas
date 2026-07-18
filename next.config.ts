@@ -16,13 +16,14 @@ const securityHeaders = [
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' data: blob:",
       "font-src 'self'",
-      "connect-src 'self'",
+      "connect-src 'self' https://api.mislineas.com.mx",
       "frame-ancestors 'none'",
     ].join("; "),
   },
 ];
 
 const nextConfig: NextConfig = {
+  output: "standalone",
   reactCompiler: true,
   serverExternalPackages: [
     "puppeteer-core",

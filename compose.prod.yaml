@@ -1,0 +1,41 @@
+services:
+  app:
+    image: ghcr.io/moraxh/mislineas:latest
+    restart: unless-stopped
+    env_file:
+      - .env.prod
+    expose:
+      - "3000"
+    networks:
+      - web
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - web
+    depends_on:
+      - app
+
+  watchtower:
+    image: containrrr/watchtower
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --interval 300 --cleanup app
+    environment:
+      - WATCHTOWER_LABEL_ENABLE=false
+
+networks:
+  web:
+
+volumes:
+  caddy_data:
+  caddy_config:

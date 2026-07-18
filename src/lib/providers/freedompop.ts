@@ -1,9 +1,15 @@
 import { createCipheriv } from "node:crypto";
-import { fetch as undiciFetch } from "undici";
+import { ProxyAgent, fetch as undiciFetch } from "undici";
+import { getResidentialProxyUrl } from "@/lib/proxy";
 import { stripCURPs } from "@/lib/sanitize";
 import type { LineResult } from "@/types";
 
 const SECRET_KEY = "key_t3lcel_prod";
+
+function getProxyAgent(): ProxyAgent | undefined {
+  const proxyUrl = getResidentialProxyUrl();
+  return proxyUrl ? new ProxyAgent(proxyUrl) : undefined;
+}
 
 const FREEDOMPOP_PROVIDERS = [
   "AhorroCel",
@@ -51,6 +57,7 @@ async function fetchSubscriptions(
   const auth = Buffer.from("admin:admin123").toString("base64");
   const response = await undiciFetch(url, {
     method: "GET",
+    dispatcher: getProxyAgent(),
     headers: {
       accept: "application/json",
       "accept-language": "en-US,en;q=0.6",

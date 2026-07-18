@@ -1,4 +1,3 @@
-import { stripCURPs } from "@/lib/sanitize";
 import type { LineResult } from "@/types";
 
 export async function lookupCURPInMegamovil(curp: string): Promise<LineResult> {
@@ -38,51 +37,32 @@ export async function lookupCURPInMegamovil(curp: string): Promise<LineResult> {
 
   const validationData = await validationResponse.json();
 
-  if (
-    validationData.message ===
-      "La CURP ingresada no cuenta con líneas Mega móvil vinculadas." ||
-    validationData.status === "ERROR"
-  ) {
+  if (validationData.status === "ERROR") {
     return {
       company: "Mega Móvil",
       lines: [],
       isRegistered: false,
-    };
-  }
-
-  const registeredLines = await fetch(
-    "https://consultavinculacion.megamovil.mx/list.jsp",
-    { headers: { Cookie: cookies } },
-  );
-
-  if (!registeredLines.ok) {
-    console.error(
-      `Failed to fetch registered lines from Mega Móvil: ${registeredLines.status}`,
-    );
-    return {
-      company: "Mega Móvil",
-      lines: [],
-      isRegistered: true,
       rawApiResponse: validationData,
     };
   }
 
-  const htmlResponse = await registeredLines.text();
-  const lines = htmlResponse.match(/(\*{6}\d{4})/g);
-
-  if (!lines) {
-    console.log("[megamovil] no lines found in HTML response");
+  if (validationData.code === "0") {
+    return {
+      company: "Mega Móvil",
+      lines: [],
+      isRegistered: false,
+      rawApiResponse: validationData,
+    };
   }
 
-  console.log(
-    "[megamovil] registered response:",
-    JSON.stringify(stripCURPs(validationData), null, 2),
-  );
-
+  // Mega Móvil's API only confirms a specific CURP+line combination — it has
+  // no endpoint to list every line linked to a CURP. code !== "0" just means
+  // the CURP exists and the site would ask for a phone number next, so we
+  // can't determine isRegistered without one.
   return {
     company: "Mega Móvil",
-    lines: lines ?? [],
-    isRegistered: true,
+    lines: [],
+    error: "Mega Móvil requiere un número de línea específico para confirmar vinculación; no se puede listar por CURP.",
     rawApiResponse: validationData,
   };
 }

@@ -1,0 +1,3 @@
+api.mislineas.com.mx {
+    reverse_proxy app:3000
+}
