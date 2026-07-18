@@ -55,7 +55,24 @@ La lista completa y el estado de compatibilidad de cada operador se encuentra en
 
 Las consultas se ejecutan en paralelo utilizando `Promise.allSettled`, mientras que los resultados se transmiten como stream NDJSON para que la interfaz pueda mostrar respuestas en tiempo real sin esperar a que terminen todos los proveedores.
 
-Toda la aplicación corre del lado del cliente y no requiere infraestructura adicional ni servicios externos.
+---
+
+## Arquitectura y despliegue
+
+MisLíneas es una sola aplicación Next.js desplegada en dos partes:
+
+- **Frontend** (Vercel, `mislineas.com.mx`): sirve la interfaz. Llama a la API a través de `NEXT_PUBLIC_API_URL`.
+- **Backend** (servidor propio en Oracle Cloud, `api.mislineas.com.mx`): expone `/api/*`. Vive en Docker (ver `Dockerfile`, `compose.prod.yaml`, `Caddyfile`) porque algunos proveedores requieren Chromium headless (Puppeteer) y proxies residenciales — cosas incompatibles con un entorno serverless por costo y límites de tamaño de función.
+
+El backend se actualiza solo: cada tag `v*.*.*` dispara un build en GitHub Actions que publica la imagen en GHCR, y Watchtower en el servidor la detecta y la despliega sin intervención manual.
+
+CORS restringe las llamadas a la API al origen configurado en `FRONTEND_ORIGIN`.
+
+### Proxies
+
+Algunos proveedores (AT&T, Telcel, Freedompop, TalentoNet) bloquean tráfico desde IPs de datacenter — necesitan salir por una IP residencial mexicana, configurada vía `RESIDENTIAL_PROXIES`. El resto no lo requiere.
+
+El costo de ancho de banda está dominado casi por completo por AT&T (~1–1.3 MB por consulta, ya que corre un navegador headless completo para pasar su verificación anti-bot); el resto de los proveedores con proxy consumen menos de 1 KB por consulta cada uno.
 
 ---
 
@@ -80,7 +97,7 @@ pnpm build
 pnpm start
 ```
 
-No requiere variables de entorno ni API keys externas.
+Variables de entorno: ver [`.env.example`](.env.example). Para desarrollo local básico no se necesita ninguna — solo son necesarias para el backend en producción (proxies, origen permitido por CORS) o para reproducir localmente proveedores específicos.
 
 ---
 
@@ -94,6 +111,8 @@ MisLíneas está construido con:
 - Tailwind CSS 4
 
 La aplicación utiliza App Router y una arquitectura enfocada en streaming y renderizado progresivo de resultados.
+
+Infraestructura: Vercel (frontend), Docker + Oracle Cloud (backend), GitHub Actions + GHCR + Watchtower (CI/CD).
 
 ---
 
