@@ -1,14 +1,29 @@
+import type { Browser } from "puppeteer-core";
 import { getResidentialProxyUrl } from "@/lib/proxy";
 import type { LineResult } from "@/types";
 
 const UA =
   "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36";
 
-async function attempt(
-  curp: string,
+// Browsers are reused across lookups so Chrome's disk cache keeps the
+// challenge JS/CSS warm instead of re-downloading ~1MB through the
+// residential proxy every time. Each lookup still gets its own page/session
+// — only the browser process and its cache are shared. Pool is capped so a
+// crash only takes down the lookups sharing that one browser, not all of
+// them; once a browser is full, a new one is launched instead of queuing.
+const MAX_CONCURRENT_PAGES = 4;
+const MAX_POOL_SIZE = 3;
+const browserPool: Browser[] = [];
+
+async function getBrowser(
   executablePath: string,
   extraArgs: string[],
-): Promise<LineResult | null> {
+): Promise<Browser> {
+  for (const browser of browserPool) {
+    if (!browser.connected) continue;
+    if ((await browser.pages()).length < MAX_CONCURRENT_PAGES) return browser;
+  }
+
   const proxy = getResidentialProxyUrl();
   const { default: puppeteer } = await import("puppeteer-core");
 
@@ -28,10 +43,31 @@ async function attempt(
     headless: true,
     args,
   });
+  browser.on("disconnected", () => {
+    const idx = browserPool.indexOf(browser);
+    if (idx !== -1) browserPool.splice(idx, 1);
+  });
+
+  if (browserPool.length >= MAX_POOL_SIZE) {
+    const [evicted] = browserPool.splice(0, 1);
+    evicted?.pages().then((pages) => {
+      if (pages.length === 0) evicted.close().catch(() => {});
+    });
+  }
+  browserPool.push(browser);
+  return browser;
+}
+
+async function attempt(
+  curp: string,
+  executablePath: string,
+  extraArgs: string[],
+): Promise<LineResult | null> {
+  const proxy = getResidentialProxyUrl();
+  const browser = await getBrowser(executablePath, extraArgs);
+  const page = await browser.newPage();
 
   try {
-    const page = await browser.newPage();
-
     if (proxy) {
       const proxyUrl = new URL(proxy);
       await page.authenticate({
@@ -191,7 +227,7 @@ async function attempt(
 
     return { company: "AT&T", lines: [], isRegistered: false };
   } finally {
-    await browser.close();
+    await page.close().catch(() => {});
   }
 }
 
