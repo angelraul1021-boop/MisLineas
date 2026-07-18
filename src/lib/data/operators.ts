@@ -38,11 +38,7 @@ export const OPERATORS: OperatorEntry[] = [
   { name: "Addinteli", status: "supported" },
   { name: "AhorroCel", status: "supported" },
   { name: "AI Telecomm", status: "supported" },
-  {
-    name: "ALLCE",
-    status: "paused",
-    reason: "Recaptcha bloquea peticiones desde servidor.",
-  },
+  { name: "ALLCE", status: "supported" },
   { name: "AT&T / Unefon / WIM", status: "supported" },
   { name: "Bait", status: "supported" },
   { name: "Beneleit Móvil", status: "supported" },
@@ -105,7 +101,7 @@ export const OPERATORS: OperatorEntry[] = [
     reason: "Recaptcha bloquea peticiones desde servidor.",
   },
   { name: "Mirlo", status: "supported" },
-  { name: "MoBig", status: "verify", reason: "Falta verificar." },
+  { name: "MoBig", status: "supported" },
   {
     name: "Mosi",
     status: "paused",
@@ -148,11 +144,7 @@ export const OPERATORS: OperatorEntry[] = [
   { name: "Rincel", status: "supported" },
   { name: "Secure Witness", status: "supported" },
   { name: "Sfon", status: "supported" },
-  {
-    name: "Sky",
-    status: "paused",
-    reason: "Requiere login para consultar líneas.",
-  },
+  { name: "Sky", status: "supported" },
   {
     name: "Sorcel",
     status: "paused",

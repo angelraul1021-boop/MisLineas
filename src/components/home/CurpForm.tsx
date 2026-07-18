@@ -147,23 +147,22 @@ export function CurpForm({
               base de datos y solo se utiliza para la consulta en tiempo real.
             </p>
           </div>
-          <div className="flex items-start gap-2 rounded-xl border border-red-100 bg-red-50/80 p-3 text-xs text-red-800">
-            <Ban className="w-4 h-4 shrink-0 mt-0.5 text-red-500" />
+          <div className="flex items-start gap-2 rounded-xl border border-orange-100 bg-orange-50/80 p-3 text-xs text-orange-800">
+            <Ban className="w-4 h-4 shrink-0 mt-0.5 text-orange-500" />
             <p>
-              <strong>AT&T nos bloqueó 4 veces.</strong> Cada vez que encontramos la forma de
-              que pudieras revisar tus propias lineas, ellos invirtieron dinero para volver a
-              bloquearnos. La ultima vez lo hicieron de una forma tan costosa que para seguir
-              funcionando tendriamos que pagar cerca de $900 pesos cada dia de nuestro bolsillo,
-              algo imposible para un proyecto que hacemos de forma gratuita y sin fines de lucro.
-              Condenamos ampliamente que una empresa dificulte el acceso y haga mas tardado el
-              proceso para que los mexicanos puedan saber que numeros telefonicos estan
-              registrados a su nombre. Si aun asi quieres consultarlo puedes hacerlo
+              <strong>Actualizado: AT&T nos ha bloqueado 5 veces, y contando.</strong> Cada
+              vez que encontramos la forma de que pudieras revisar tus propias lineas, ellos
+              invierten dinero para volver a bloquearnos. Ahorita ya les ganamos otra vez, pero
+              no sabemos cuanto les tome volver a intentarlo. Condenamos ampliamente que una
+              empresa dificulte el acceso y haga mas tardado el proceso para que los mexicanos
+              puedan saber que numeros telefonicos estan registrados a su nombre. Si en algun
+              momento AT&T deja de funcionar aqui, puedes consultarlo
               directamente en{" "}
               <a
                 href="https://att.com.mx/controlpersonal/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="underline font-medium hover:text-red-900 transition-colors"
+                className="underline font-medium hover:text-orange-900 transition-colors"
               >
                 att.com.mx/controlpersonal
               </a>

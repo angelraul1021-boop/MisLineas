@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle, Server } from "lucide-react";
 import { AnimatePresence } from "motion/react";
 import type React from "react";
 import { useState } from "react";
@@ -54,6 +54,15 @@ export default function MisLineas() {
 
   return (
     <div className="min-h-screen bg-[linear-gradient(180deg,#fafaf9_0%,#f4f4f5_40%,#ffffff_100%)] font-sans text-zinc-900 selection:bg-zinc-900 selection:text-white">
+      <div className="flex items-center justify-center gap-3 border-b border-emerald-400/60 bg-[linear-gradient(90deg,#059669_0%,#047857_100%)] px-4 py-3 text-sm text-white">
+        <Server className="w-5 h-5 shrink-0" />
+        <p className="text-center max-w-4xl font-medium">
+          <strong>Migramos de servidor de nuevo.</strong> Cambiamos de proveedor
+          para reducir costos de hosting a $0 y mejorar la velocidad de las
+          consultas. Si notas algo raro, repórtalo.
+        </p>
+      </div>
+
       <div className="flex items-center justify-center gap-3 border-b border-amber-300/60 bg-[linear-gradient(90deg,#d97706_0%,#b45309_100%)] px-4 py-3 text-sm text-white">
         <AlertTriangle className="w-5 h-5 shrink-0" />
         <p className="text-center max-w-4xl font-medium">
@@ -71,17 +80,6 @@ export default function MisLineas() {
             registro.telcel.com/vinculatulinea
           </a>
           .
-        </p>
-      </div>
-
-      <div className="flex items-center justify-center gap-3 border-b border-red-400/60 bg-[linear-gradient(90deg,#dc2626_0%,#991b1b_100%)] px-4 py-3 text-sm text-white">
-        <AlertTriangle className="w-5 h-5 shrink-0" />
-        <p className="text-center max-w-4xl font-medium">
-          <strong>Aviso Mobig.</strong> Mobig cambió recientemente el formato
-          de respuesta de su sistema de consulta, lo que ocasionó falsos
-          positivos (líneas marcadas como registradas sin estarlo). Ya
-          corregimos el problema, pero si tu resultado con Mobig no coincide
-          con lo esperado, repórtalo.
         </p>
       </div>
 
