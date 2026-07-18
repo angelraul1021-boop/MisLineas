@@ -43,7 +43,7 @@ export const OPERATORS: OperatorEntry[] = [
     status: "paused",
     reason: "Recaptcha bloquea peticiones desde servidor.",
   },
-  { name: "AT&T / Unefon / WIM", status: "paused", reason: "AT&T bloqueó activamente el acceso. El costo de mantenerlo (~$900 MXN/día) es insostenible para este proyecto." },
+  { name: "AT&T / Unefon / WIM", status: "supported" },
   { name: "Bait", status: "supported" },
   { name: "Beneleit Móvil", status: "supported" },
   {
@@ -91,7 +91,12 @@ export const OPERATORS: OperatorEntry[] = [
   { name: "Link Móvil", status: "supported" },
   { name: "Kolors Mobile", status: "supported" },
   { name: "Maifon", status: "supported" },
-  { name: "Mega Móvil", status: "supported" },
+  {
+    name: "Mega Móvil",
+    status: "paused",
+    reason:
+      "Su API solo confirma una combinación específica de CURP + número de línea; no ofrece forma de listar líneas por CURP.",
+  },
   { name: "México Móvil", status: "supported" },
   { name: "Mexfon", status: "supported" },
   {
@@ -111,11 +116,7 @@ export const OPERATORS: OperatorEntry[] = [
   { name: "Móvil para Todos", status: "supported" },
   { name: "Nabi", status: "supported" },
   { name: "Netmas", status: "supported" },
-  {
-    name: "Newww",
-    status: "paused",
-    reason: "ConnectTimeoutError en sus servidores.",
-  },
+  { name: "Newww", status: "supported" },
   {
     name: "Nextor Movil",
     status: "paused",
@@ -132,11 +133,7 @@ export const OPERATORS: OperatorEntry[] = [
   { name: "OXXO CEL", status: "supported" },
   { name: "PilloFon", status: "supported" },
   { name: "Playcell", status: "supported" },
-  {
-    name: "Red Aguila",
-    status: "paused",
-    reason: "ConnectTimeoutError en sus servidores.",
-  },
+  { name: "Red Aguila", status: "supported" },
   { name: "Red Blak", status: "supported" },
   { name: "Red Dog", status: "supported" },
   { name: "Red Potencia", status: "supported" },

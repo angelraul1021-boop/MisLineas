@@ -1,3 +1,5 @@
+import { ProxyAgent, fetch as undiciFetch } from "undici";
+import { getResidentialProxyUrl } from "@/lib/proxy";
 import { stripCURPs } from "@/lib/sanitize";
 import type { LineResult } from "@/types";
 
@@ -6,12 +8,14 @@ const possibleProviders = ["Newww", "RedAguila", "Link Movil"];
 export async function loookupCURPInTalentoNetMVNO(
   curp: string,
 ): Promise<LineResult> {
-  const validationResponse = await fetch(
+  const proxyUrl = getResidentialProxyUrl();
+  const validationResponse = await undiciFetch(
     `https://core.newww.mx/api/core/consulta_lineas_vinculacion?curp=${curp}`,
+    { dispatcher: proxyUrl ? new ProxyAgent(proxyUrl) : undefined },
   );
 
   if (validationResponse.status === 404) {
-    const errorData = await validationResponse.json();
+    const errorData = (await validationResponse.json()) as { msg?: string };
 
     if (errorData.msg === "No se encontraron registros para esta CURP.") {
       return {
