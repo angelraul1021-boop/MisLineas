@@ -150,14 +150,12 @@ export function CurpForm({
           <div className="flex items-start gap-2 rounded-xl border border-orange-100 bg-orange-50/80 p-3 text-xs text-orange-800">
             <Ban className="w-4 h-4 shrink-0 mt-0.5 text-orange-500" />
             <p>
-              <strong>Actualizado: AT&T nos ha bloqueado 5 veces, y contando.</strong> Cada
+              <strong>Actualizado: AT&T nos ha bloqueado, y por ahora dejo de funcionar aqui.</strong> Cada
               vez que encontramos la forma de que pudieras revisar tus propias lineas, ellos
-              invierten dinero para volver a bloquearnos. Ahorita ya les ganamos otra vez, pero
-              no sabemos cuanto les tome volver a intentarlo. Condenamos ampliamente que una
+              invierten dinero para volver a bloquearnos. Condenamos ampliamente que una
               empresa dificulte el acceso y haga mas tardado el proceso para que los mexicanos
-              puedan saber que numeros telefonicos estan registrados a su nombre. Si en algun
-              momento AT&T deja de funcionar aqui, puedes consultarlo
-              directamente en{" "}
+              puedan saber que numeros telefonicos estan registrados a su nombre. Mientras tanto,
+              puedes consultar tus lineas AT&T directamente en{" "}
               <a
                 href="https://att.com.mx/controlpersonal/"
                 target="_blank"

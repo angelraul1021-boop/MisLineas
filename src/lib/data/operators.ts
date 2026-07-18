@@ -39,7 +39,7 @@ export const OPERATORS: OperatorEntry[] = [
   { name: "AhorroCel", status: "supported" },
   { name: "AI Telecomm", status: "supported" },
   { name: "ALLCE", status: "supported" },
-  { name: "AT&T / Unefon / WIM", status: "supported" },
+  { name: "AT&T / Unefon / WIM", status: "paused" },
   { name: "Bait", status: "supported" },
   { name: "Beneleit Móvil", status: "supported" },
   {

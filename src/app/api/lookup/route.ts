@@ -3,7 +3,6 @@ export const maxDuration = 120;
 
 import type { NextRequest } from "next/server";
 import {
-  lookupCURPInATT,
   lookupCURPINMobig,
   lookupCURPINYoMobile,
   lookupCURPInABIB,
@@ -29,10 +28,13 @@ const providers: Array<{
   provider: string;
   lookupFunction: (curp: string) => Promise<LineResult | LineResult[]>;
 }> = [
-  {
-    provider: "AT&T",
-    lookupFunction: lookupCURPInATT,
-  },
+  // {
+  //   provider: "AT&T",
+  //   lookupFunction: lookupCURPInATT,
+  //   // Disabled: ~170-800KB per lookup (full browser + Shape's common.js on
+  //   // every call) — ~95% of MisLineas's residential-proxy bandwidth. All other
+  //   // providers cost ~7-8KB. Not worth the proxy budget vs the rest.
+  // },
   {
     provider: "Telcel",
     lookupFunction: lookupCURPInTelcel,
