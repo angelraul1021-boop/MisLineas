@@ -60,11 +60,20 @@ async function attempt(
 
     await page.setRequestInterception(true);
     page.on("request", (req) => {
-      if (
-        ["image", "stylesheet", "font", "media", "other"].includes(
-          req.resourceType(),
-        )
-      ) {
+      const blockedType = [
+        "image",
+        "stylesheet",
+        "font",
+        "media",
+        "other",
+      ].includes(req.resourceType());
+      // Only common.js (Shape's bot-detection script) is needed to generate the
+      // OClmoOot cookie — the SPA bundle (index-*.js + LandingPage-*.js, ~776KB)
+      // is dead weight since we never render the page, just call the two fetch endpoints
+      const uiScript =
+        req.resourceType() === "script" && !req.url().includes("/common.js");
+
+      if (blockedType || uiScript) {
         req.abort();
       } else {
         req.continue();
