@@ -1,6 +1,8 @@
 import crypto from "node:crypto";
 import https from "node:https";
 
+import { HttpsProxyAgent } from "https-proxy-agent";
+import { getResidentialProxyUrl } from "@/lib/proxy";
 import { stripCURPs } from "@/lib/sanitize";
 import type { LineResult } from "@/types";
 
@@ -101,6 +103,8 @@ async function postJSON<T>(
   data: T | null;
   raw: string;
 }> {
+  const proxyUrl = getResidentialProxyUrl();
+
   return new Promise((resolve) => {
     const req = https.request(
       {
@@ -110,6 +114,7 @@ async function postJSON<T>(
         headers,
         rejectUnauthorized: false,
         timeout: 10000,
+        agent: proxyUrl ? new HttpsProxyAgent(proxyUrl) : undefined,
       },
       (res) => {
         let data = "";
