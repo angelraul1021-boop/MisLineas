@@ -43,9 +43,10 @@ MisLíneas intenta cerrar ese vacío.
 Actualmente incluye soporte para:
 
 - Telcel
-- AT&T
-- operadores sobre Red Altán
+- operadores sobre Red Altán (~65 marcas)
 - más de 80 OMVs en México
+
+AT&T está deshabilitado por el momento: su verificación requiere un navegador completo detrás de un proxy residencial, lo que representaba ~95% del consumo de ancho de banda del proxy para una sola operadora.
 
 La lista completa y el estado de compatibilidad de cada operador se encuentra en [OPERATORS.md](OPERATORS.md).
 
@@ -59,7 +60,7 @@ Las consultas se ejecutan en paralelo utilizando `Promise.allSettled`, mientras 
 
 ## Infraestructura
 
-El frontend se despliega en Vercel y el backend corre en un servidor propio, actualizándose automáticamente con cada nueva versión publicada.
+El frontend se despliega en Vercel y el backend corre en Docker sobre un servidor propio (Oracle Cloud), comunicándose vía CORS y actualizándose automáticamente con cada nueva versión publicada.
 
 ---
 
@@ -128,3 +129,15 @@ El usuario es responsable del uso que haga de la herramienta.
 
 Desarrollado por Jorge Mora  
 GitHub: [@moraxh](https://github.com/moraxh)
+
+---
+
+## Agradecimientos
+
+Gracias a quienes han contribuido con código, ideas o reportes que mejoraron el proyecto:
+
+- [Hadassah García](https://github.com/HadassahGarcia)
+- [Carlos Núñez](https://github.com/CarlosNunezMX) — soporte completo para MegaMovil
+- [Milo Jarow](https://github.com/milojarow) — fix de bloqueo del event loop en el solver de Red Altán
+
+Si contribuiste y no apareces aquí, abre un PR o dime y te agrego.
