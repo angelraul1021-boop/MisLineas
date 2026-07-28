@@ -22,6 +22,7 @@ interface CurpFormProps {
   history: string[];
   onSubmit: (e: React.FormEvent) => void;
   onRetry: () => void;
+  onSelectHistory: (v: string) => void;
 }
 
 export function CurpForm({
@@ -33,6 +34,7 @@ export function CurpForm({
   history,
   onSubmit,
   onRetry,
+  onSelectHistory,
 }: CurpFormProps) {
   const curpValidationError = getCurpValidationError(curp);
   const curpIsValid = curp.length === 18 && !curpValidationError;
@@ -198,11 +200,11 @@ export function CurpForm({
                   key={h}
                   type="button"
                   disabled={loading}
-                  onClick={() => setCurp(h)}
+                  onClick={() => onSelectHistory(h)}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" || e.key === " ") {
                       e.preventDefault();
-                      setCurp(h);
+                      onSelectHistory(h);
                     }
                   }}
                   className="text-xs font-mono px-2.5 py-1 bg-zinc-100/80 text-zinc-600 border border-zinc-200 rounded-lg hover:bg-zinc-200 hover:text-zinc-900 transition-colors disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-zinc-100/80 disabled:hover:text-zinc-600"
