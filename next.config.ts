@@ -28,7 +28,14 @@ const nextConfig: NextConfig = {
   serverExternalPackages: [
     "puppeteer-core",
     "@sparticuz/chromium-min",
+    "node-curl-impersonate",
   ],
+  // Sorcel resolves this binary via a runtime-constructed path.join() call
+  // (src/lib/providers/sorcel.ts), invisible to Next.js's static file-tracing
+  // analysis — force-include it so it survives standalone output pruning.
+  outputFileTracingIncludes: {
+    "/api/lookup": ["./node_modules/node-curl-impersonate/bin/**"],
+  },
   async headers() {
     return [
       {

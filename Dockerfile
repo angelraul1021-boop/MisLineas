@@ -31,6 +31,7 @@ ENV UV_THREADPOOL_SIZE=64
 RUN apt-get update && apt-get install -y --no-install-recommends \
     chromium \
     fonts-liberation \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /usr/src/app
