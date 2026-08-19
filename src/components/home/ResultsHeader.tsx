@@ -47,7 +47,7 @@ export function ResultsHeader({
               {detectedCount === 1 ? "Línea detectada" : "Líneas detectadas"}
             </h2>
             {loading && (
-              <span className="flex items-center justify-center bg-zinc-100 text-zinc-500 rounded-full px-3 py-1 text-xs font-medium gap-1.5 animate-pulse border border-zinc-200">
+              <span className="flex items-center justify-center text-zinc-500 text-xs font-medium gap-1.5 animate-pulse">
                 <Loader2 className="w-3 h-3 animate-spin text-zinc-400" />{" "}
                 Consultando
               </span>

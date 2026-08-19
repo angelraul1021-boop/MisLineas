@@ -57,19 +57,22 @@ export function CurpForm({
   };
 
   return (
-    <div className="rounded-3xl border border-zinc-200 bg-white p-6 shadow-lg shadow-zinc-950/5 sm:p-7">
+    <div className="rounded-3xl border border-zinc-200 bg-white p-5 shadow-lg shadow-zinc-950/5 sm:p-7">
       <form onSubmit={onSubmit} className="space-y-5">
         <div className="space-y-3">
           <div className="space-y-1">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-zinc-400">
-              Herramienta principal
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-zinc-400">
+              Consulta en tiempo real
             </p>
             <label
               htmlFor="curp-input"
-              className="block text-base font-semibold text-zinc-900"
+              className="block text-lg font-semibold tracking-tight text-zinc-950"
             >
-              Ingresa tu CURP para comenzar
+              Ingresa tu CURP para consultar tus líneas
             </label>
+            <p className="pt-1 text-sm leading-6 text-zinc-500">
+              Escribe los 18 caracteres de tu CURP.
+            </p>
           </div>
           <label htmlFor="curp-input" className="sr-only">
             Ingresa tu CURP
@@ -82,8 +85,8 @@ export function CurpForm({
               autoCapitalize="characters"
               placeholder="Ej. XXXX000000XXXXXX00"
               className={cn(
-                "w-full rounded-2xl border border-zinc-200 bg-zinc-50 px-4 py-4 pr-24 text-base outline-none transition-all placeholder:text-zinc-400",
-                "focus:border-black focus:ring-1 focus:ring-black",
+                "min-h-14 w-full rounded-2xl border border-zinc-300 bg-zinc-50 px-4 py-4 pr-28 text-base outline-none transition-all placeholder:text-zinc-400",
+                "focus:border-zinc-900 focus:bg-white focus:ring-4 focus:ring-zinc-900/5",
                 "font-mono uppercase",
                 curpValidationError
                   ? "border-red-300 focus:border-red-500 focus:ring-red-500 bg-red-50"
@@ -99,6 +102,10 @@ export function CurpForm({
                 )
               }
               maxLength={18}
+              minLength={18}
+              required
+              spellCheck={false}
+              enterKeyHint="search"
               disabled={loading}
               aria-describedby={curpValidationError ? "curp-error" : undefined}
             />
@@ -116,7 +123,7 @@ export function CurpForm({
                 <button
                   type="button"
                   onClick={() => setCurp("")}
-                  className="p-1.5 text-zinc-400 hover:text-zinc-900 hover:bg-zinc-200/50 rounded-lg transition-colors"
+                  className="flex h-9 w-9 items-center justify-center rounded-lg text-zinc-500 transition-colors hover:bg-zinc-200/70 hover:text-zinc-950 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-900"
                   aria-label="Limpiar CURP"
                 >
                   <X className="w-3.5 h-3.5" />
@@ -125,7 +132,7 @@ export function CurpForm({
               <button
                 type="button"
                 onClick={handlePasteCurp}
-                className="p-1.5 text-zinc-400 hover:text-zinc-900 hover:bg-zinc-200/50 rounded-lg transition-colors"
+                className="flex h-9 w-9 items-center justify-center rounded-lg text-zinc-500 transition-colors hover:bg-zinc-200/70 hover:text-zinc-950 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-900"
                 title="Pegar desde el portapapeles"
                 aria-label="Pegar CURP desde portapapeles"
               >
@@ -142,22 +149,28 @@ export function CurpForm({
               {curpValidationError}
             </p>
           )}
-          <div className="flex items-start gap-2 rounded-xl border border-emerald-100 bg-emerald-50/80 p-3 text-xs text-emerald-800">
-            <ShieldCheck className="w-4 h-4 shrink-0 mt-0.5 text-emerald-600" />
+          <div className="flex items-start gap-2.5 rounded-xl border border-emerald-100 bg-emerald-50/80 p-3.5 text-sm leading-5 text-emerald-900">
+            <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
             <p>
-              Tu CURP viaja cifrada, <strong>no se guarda</strong> en ninguna
-              base de datos y solo se utiliza para la consulta en tiempo real.
+              Tu CURP se utiliza para realizar esta consulta en tiempo real. No
+              necesitas crear una cuenta y el historial visible se conserva
+              únicamente en tu navegador.
             </p>
           </div>
-          <div className="flex items-start gap-2 rounded-xl border border-orange-100 bg-orange-50/80 p-3 text-xs text-orange-800">
-            <Ban className="w-4 h-4 shrink-0 mt-0.5 text-orange-500" />
-            <p>
-              <strong>Actualizado: AT&T nos ha bloqueado, y por ahora dejo de funcionar aqui.</strong> Cada
-              vez que encontramos la forma de que pudieras revisar tus propias lineas, ellos
-              invierten dinero para volver a bloquearnos. Condenamos ampliamente que una
-              empresa dificulte el acceso y haga mas tardado el proceso para que los mexicanos
-              puedan saber que numeros telefonicos estan registrados a su nombre. Mientras tanto,
-              puedes consultar tus lineas AT&T directamente en{" "}
+          <details className="group rounded-xl border border-amber-100 bg-amber-50/70 text-sm text-amber-900">
+            <summary className="flex min-h-12 cursor-pointer list-none items-center gap-2.5 px-3.5 font-medium text-zinc-700">
+              <Ban className="h-4 w-4 shrink-0 text-amber-600" />
+              Algunas operadoras requieren revisión manual
+              <span
+                className="ml-auto text-lg text-zinc-400 transition-transform group-open:rotate-45"
+                aria-hidden="true"
+              >
+                +
+              </span>
+            </summary>
+            <p className="border-t border-amber-100 px-3.5 py-3 leading-6">
+              Si una plataforma bloquea la consulta, te damos su ruta oficial
+              para continuar, por ejemplo en{" "}
               <a
                 href="https://att.com.mx/controlpersonal/"
                 target="_blank"
@@ -168,7 +181,7 @@ export function CurpForm({
               </a>
               .
             </p>
-          </div>
+          </details>
           <div className="flex items-center justify-between text-xs">
             <p className="text-zinc-500">
               ¿No recuerdas tu CURP?{" "}
@@ -219,7 +232,8 @@ export function CurpForm({
         <button
           type="submit"
           disabled={loading || !curpIsValid}
-          className="flex w-full items-center justify-center gap-2 rounded-2xl bg-black py-4 font-medium text-white transition-colors hover:bg-zinc-800 disabled:opacity-50 disabled:hover:bg-black"
+          aria-disabled={loading || !curpIsValid}
+          className="flex min-h-14 w-full items-center justify-center gap-2 rounded-2xl bg-black px-5 py-4 font-semibold text-white transition-colors hover:bg-zinc-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-900 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {loading ? (
             <>

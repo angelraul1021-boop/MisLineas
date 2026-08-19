@@ -1,13 +1,19 @@
 "use client";
 
-import { ArrowLeft, Coffee, HeartHandshake, Server, Shield, Users } from "lucide-react";
+import {
+  ArrowLeft,
+  Coffee,
+  HeartHandshake,
+  Server,
+  Shield,
+  Users,
+} from "lucide-react";
 import { motion } from "motion/react";
 import Link from "next/link";
 
 const KOFI_URL = "https://ko-fi.com/moraxh";
 
 export default function DonarPage() {
-
   return (
     <div className="min-h-screen bg-[linear-gradient(180deg,#fafaf9_0%,#f4f4f5_40%,#ffffff_100%)] font-sans text-zinc-900">
       <div className="mx-auto flex min-h-screen max-w-xl flex-col px-4 py-12 sm:px-6">
@@ -42,8 +48,7 @@ export default function DonarPage() {
             <div className="flex items-center gap-3 mb-4">
               <Users className="w-4 h-4 text-zinc-400" />
               <span className="text-sm font-medium text-zinc-700">
-                Más de{" "}
-                <span className="font-bold text-zinc-950">100,000</span>{" "}
+                Más de <span className="font-bold text-zinc-950">150,000</span>{" "}
                 consultas realizadas
               </span>
             </div>

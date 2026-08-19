@@ -235,7 +235,7 @@ export function ResultsPanel({
           onChange={(e) => setSearchQuery(e.target.value)}
           className="w-full bg-white border border-zinc-200 px-10 py-3 rounded-xl text-sm outline-none transition-all placeholder:text-zinc-400 focus:border-black focus:ring-1 focus:ring-black shadow-sm"
         />
-        <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-medium text-zinc-400 bg-zinc-100 px-2 py-1 rounded-md">
+        <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-medium text-zinc-400">
           {visibleResults.length + collapsedNotFound.length} resultados
         </span>
       </div>

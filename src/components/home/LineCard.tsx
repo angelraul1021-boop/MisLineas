@@ -43,28 +43,32 @@ export function LineCard({ linea, idx, onReport }: Props) {
           <Phone className="w-5 h-5 text-zinc-500" />
         </div>
         <div>
-          <div className="flex items-center gap-2 mb-0.5">
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mb-0.5">
             <span className="font-semibold text-zinc-900">
               {linea.operadora}
             </span>
             {linea.isPossible ? (
-              <span className="text-[10px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full font-medium">
+              <span className="inline-flex items-center gap-1.5 text-xs font-medium text-amber-700">
+                <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />{" "}
                 Posible
               </span>
             ) : linea.isNotFound ? (
-              <span className="text-[10px] bg-zinc-100 text-zinc-600 px-2 py-0.5 rounded-full font-medium">
-                No encontrada
+              <span className="inline-flex items-center gap-1.5 text-xs font-medium text-zinc-500">
+                <span className="h-1.5 w-1.5 rounded-full bg-zinc-400" /> No
+                encontrada
               </span>
             ) : linea.isError ? (
-              <span className="text-[10px] bg-red-100 text-red-600 px-2 py-0.5 rounded-full font-medium">
-                Error
+              <span className="inline-flex items-center gap-1.5 text-xs font-medium text-red-600">
+                <span className="h-1.5 w-1.5 rounded-full bg-red-500" /> Error
               </span>
             ) : linea.isUnavailable ? (
-              <span className="text-[10px] bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full font-medium">
-                No disponible
+              <span className="inline-flex items-center gap-1.5 text-xs font-medium text-orange-700">
+                <span className="h-1.5 w-1.5 rounded-full bg-orange-500" /> No
+                disponible
               </span>
             ) : (
-              <span className="text-[10px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-medium">
+              <span className="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-700">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />{" "}
                 Registrada
               </span>
             )}

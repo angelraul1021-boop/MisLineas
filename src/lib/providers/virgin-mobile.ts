@@ -10,7 +10,7 @@ export async function loookupCURPInVirginMobile(
   };
 
   const validationResponse = await fetch(
-    "https://www.virginmobile.mx/api/v1/public/consulta-linea/findMsisdn",
+    "https://mi.virginmobile.mx/api/v1/public/consulta-linea/findMsisdn",
     {
       signal: AbortSignal.timeout(PROVIDER_TIMEOUT_MS),
       method: "POST",

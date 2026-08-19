@@ -18,7 +18,7 @@ interface Props {
 export function FilterTabs({ tabs, active, onChange }: Props) {
   return (
     <div
-      className="flex gap-2 flex-wrap"
+      className="flex flex-wrap gap-1 rounded-xl border border-zinc-200 bg-zinc-100 p-1"
       role="tablist"
       aria-label="Filtrar resultados"
     >
@@ -36,19 +36,17 @@ export function FilterTabs({ tabs, active, onChange }: Props) {
             }
           }}
           className={cn(
-            "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-all",
+            "flex flex-1 items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-xs font-medium transition-colors sm:flex-none",
             active === tab.key
-              ? "bg-zinc-900 text-white border-zinc-900"
-              : "bg-white text-zinc-600 border-zinc-200 hover:border-zinc-400 hover:text-zinc-900",
+              ? "bg-white text-zinc-900 shadow-sm"
+              : "text-zinc-500 hover:bg-white/60 hover:text-zinc-900",
           )}
         >
           {tab.label}
           <span
             className={cn(
-              "text-[10px] font-bold tabular-nums px-1.5 py-0.5 rounded-full",
-              active === tab.key
-                ? "bg-white/20 text-white"
-                : "bg-zinc-100 text-zinc-500",
+              "text-[10px] font-bold tabular-nums",
+              active === tab.key ? "text-zinc-700" : "text-zinc-400",
             )}
           >
             {tab.count}

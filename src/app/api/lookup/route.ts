@@ -2,6 +2,7 @@ export const runtime = "nodejs";
 export const maxDuration = 120;
 
 import type { NextRequest } from "next/server";
+import { corsHeaders, corsPreflight } from "@/lib/cors";
 import {
   lookupCURPINMobig,
   lookupCURPINYoMobile,
@@ -9,17 +10,17 @@ import {
   lookupCURPInAltanMVNO,
   lookupCURPInBeneleit,
   lookupCURPInDialo,
+  lookupCURPInFreedompop,
   lookupCURPInIENTC,
   lookupCURPInLogisticaACN,
   lookupCURPInMirlo,
+  lookupCURPInSorcel,
   lookupCURPInTelcel,
-  lookupCURPInFreedompop,
   loookupCURPINWeeex,
-  loookupCURPInVirginMobile,
   loookupCURPInTalentoNetMVNO,
+  loookupCURPInVirginMobile,
 } from "@/lib/providers";
 import { validateCURP } from "@/lib/providers/curp";
-import { corsHeaders, corsPreflight } from "@/lib/cors";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { stripCURPs } from "@/lib/sanitize";
 import type { LineResult } from "@/types";
@@ -100,11 +101,10 @@ const providers: Array<{
   //   lookupFunction: lookupCURPINNextorMovil,
   //   // Disabled: rate limit
   // },
-  // {
-  //   provider: "Sorcel",
-  //   lookupFunction: lookupCURPInSorcel,
-  //   // Disabled: Cloudflare JS challenge blocks server-side requests
-  // },
+  {
+    provider: "Sorcel",
+    lookupFunction: lookupCURPInSorcel,
+  },
   {
     provider: "TalentoNet (Newww, Red Aguila, Link Móvil)",
     lookupFunction: loookupCURPInTalentoNetMVNO,
@@ -113,18 +113,18 @@ const providers: Array<{
     provider: "Virgin Mobile",
     lookupFunction: loookupCURPInVirginMobile,
   },
-  // {
-  //   provider: "Weex",
-  //   lookupFunction: loookupCURPINWeeex,
-  // },
+  {
+    provider: "Weex",
+    lookupFunction: loookupCURPINWeeex,
+  },
   {
     provider: "Freedompop",
     lookupFunction: lookupCURPInFreedompop,
   },
-  // {
-  //   provider: "Yo Mobile",
-  //   lookupFunction: lookupCURPINYoMobile,
-  // },
+  {
+    provider: "Yo Mobile",
+    lookupFunction: lookupCURPINYoMobile,
+  },
 ];
 
 export async function OPTIONS(req: NextRequest) {

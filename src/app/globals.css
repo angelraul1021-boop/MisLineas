@@ -4,6 +4,14 @@ html {
   scroll-behavior: smooth;
 }
 
+body {
+  text-rendering: optimizeLegibility;
+}
+
+h1 {
+  text-wrap: balance;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

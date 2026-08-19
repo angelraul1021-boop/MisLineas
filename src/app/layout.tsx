@@ -8,7 +8,7 @@ const siteUrl = "https://mislineas.com.mx";
 const siteName = "MisLíneas";
 const siteTitle = "MisLíneas - Consulta líneas telefónicas por CURP";
 const siteDescription =
-  "Consulta las líneas telefónicas vinculadas a tu CURP en las principales operadoras de México.";
+  "Consulta las plataformas disponibles de operadoras móviles para revisar qué líneas aparecen vinculadas a tu CURP.";
 const structuredData = {
   "@context": "https://schema.org",
   "@graph": [
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
     "Líneas telefónicas",
     "Telcel",
     "AT&T",
-    "Altan Redes",
+    "Altán Redes",
     "México",
     "Operadoras",
   ],

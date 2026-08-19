@@ -1,20 +1,28 @@
+import { ProxyAgent, fetch as undiciFetch } from "undici";
 import { PROVIDER_TIMEOUT_MS } from "@/lib/data/content";
+import { getResidentialProxyUrl } from "@/lib/proxy";
 import { stripCURPs } from "@/lib/sanitize";
 import type { LineResult } from "@/types";
+
+function getProxyAgent(): ProxyAgent | undefined {
+  const proxyUrl = getResidentialProxyUrl();
+  return proxyUrl ? new ProxyAgent(proxyUrl) : undefined;
+}
 
 export async function lookupCURPINNextorMovil(
   curp: string,
 ): Promise<LineResult> {
-  const authResponse = await fetch(
+  const authResponse = await undiciFetch(
     "https://vinculacion.nextormovil.mx/api/consulta/iniciar",
     {
       signal: AbortSignal.timeout(PROVIDER_TIMEOUT_MS),
       method: "POST",
+      dispatcher: getProxyAgent(),
     },
   );
 
   if (!authResponse.ok) {
-    const errorData = await authResponse.json();
+    const errorData = (await authResponse.json()) as { code?: string };
 
     if (errorData.code === "IP_RATE_LIMIT") {
       console.warn(
@@ -35,7 +43,7 @@ export async function lookupCURPINNextorMovil(
     };
   }
 
-  const authData = await authResponse.json();
+  const authData = (await authResponse.json()) as { sessionId?: string };
   const sessionId = authData.sessionId;
 
   const validationBody = {
@@ -48,13 +56,14 @@ export async function lookupCURPINNextorMovil(
     "Content-Type": "application/json",
   };
 
-  const validationResponse = await fetch(
+  const validationResponse = await undiciFetch(
     "https://vinculacion.nextormovil.mx/api/consulta/pre-check",
     {
       signal: AbortSignal.timeout(PROVIDER_TIMEOUT_MS),
       method: "POST",
       headers: validationHeaders,
       body: JSON.stringify(validationBody),
+      dispatcher: getProxyAgent(),
     },
   );
 
@@ -73,7 +82,9 @@ export async function lookupCURPINNextorMovil(
     };
   }
 
-  const validationData = await validationResponse.json();
+  const validationData = (await validationResponse.json()) as {
+    encontrado?: boolean;
+  };
 
   if (validationData.encontrado) {
     console.log(

@@ -1,53 +1,75 @@
+import { execFile } from "node:child_process";
+import path from "node:path";
+import { promisify } from "node:util";
 import { PROVIDER_TIMEOUT_MS } from "@/lib/data/content";
+import { getResidentialProxyUrl } from "@/lib/proxy";
 import type { LineResult } from "@/types";
 
-export async function lookupCURPInSorcel(curp: string): Promise<LineResult> {
-  const vallidationFormData = new FormData();
-  vallidationFormData.append("curpa", curp);
+const execFileAsync = promisify(execFile);
 
-  const validationResponse = await fetch(
-    "https://www.soriup.mx/consultaR.asp",
-    {
-      signal: AbortSignal.timeout(PROVIDER_TIMEOUT_MS),
-      method: "POST",
-      body: vallidationFormData,
-    },
+// Sorcel's Cloudflare WAF fingerprints the TLS ClientHello and blocks Node's
+// fetch/undici outright (403, even with browser-like headers) while plain
+// curl passes. curl-impersonate replicates Chrome's TLS fingerprint, which is
+// enough to get through — invoked via execFile (argv array, no shell) so the
+// CURP never touches a shell string.
+function resolveBinary(): string {
+  const arch = process.arch === "arm64" ? "aarch64" : "x86";
+  const platform = process.platform === "darwin" ? "darwin" : "linux";
+  return path.join(
+    process.cwd(),
+    "node_modules",
+    "node-curl-impersonate",
+    "bin",
+    `curl-impersonate-chrome-${platform}-${arch}`,
   );
+}
 
-  if (!validationResponse.ok) {
-    const errorBody = await validationResponse
-      .text()
-      .catch(() => "(unreadable)");
-    console.error(
-      `Failed to validate CURP with Sorcel: ${validationResponse.status} ${validationResponse.statusText} — body: ${errorBody}`,
+export async function lookupCURPInSorcel(curp: string): Promise<LineResult> {
+  try {
+    const proxyUrl = getResidentialProxyUrl();
+    const proxyArgs = proxyUrl ? ["--proxy", proxyUrl] : [];
+
+    const { stdout } = await execFileAsync(
+      resolveBinary(),
+      [
+        "-s",
+        "-X",
+        "POST",
+        "-F",
+        `curpa=${curp}`,
+        "--compressed",
+        "--max-time",
+        String(Math.ceil(PROVIDER_TIMEOUT_MS / 1000)),
+        ...proxyArgs,
+        "https://www.soriup.mx/consultaR.asp",
+      ],
+      { timeout: PROVIDER_TIMEOUT_MS },
     );
 
+    if (stdout.includes("No hay registros para esa RFC/CURP")) {
+      return {
+        company: "Sorcel",
+        lines: [],
+        isRegistered: false,
+      };
+    }
+
+    console.log("[sorcel] registered response (HTML text):", stdout);
+    return {
+      company: "Sorcel",
+      lines: [],
+      isRegistered: true,
+      rawApiResponse: {
+        responseType: "html",
+        snippet: stdout.slice(0, 500),
+      },
+    };
+  } catch (e) {
+    console.error("Failed to validate CURP with Sorcel:", e);
     return {
       company: "Sorcel",
       lines: [],
       error: "Failed to validate CURP with Sorcel",
     };
   }
-
-  // Sorcel returns an HTML page, so we need to parse it to determine if the CURP is registered
-  const validationText = await validationResponse.text();
-
-  if (validationText.includes("No hay registros para esa RFC/CURP")) {
-    return {
-      company: "Sorcel",
-      lines: [],
-      isRegistered: false,
-    };
-  }
-
-  console.log("[sorcel] registered response (HTML text):", validationText);
-  return {
-    company: "Sorcel",
-    lines: [],
-    isRegistered: true,
-    rawApiResponse: {
-      responseType: "html",
-      snippet: validationText.slice(0, 500),
-    },
-  };
 }

@@ -1,5 +1,5 @@
-import { PROVIDER_TIMEOUT_MS } from "@/lib/data/content";
 import { ProxyAgent, fetch as undiciFetch } from "undici";
+import { PROVIDER_TIMEOUT_MS } from "@/lib/data/content";
 import { getResidentialProxyUrl } from "@/lib/proxy";
 import { stripCURPs } from "@/lib/sanitize";
 import type { LineResult } from "@/types";
@@ -19,16 +19,12 @@ export async function loookupCURPInTalentoNetMVNO(
   );
 
   if (validationResponse.status === 404) {
-    const errorData = (await validationResponse.json()) as { msg?: string };
-
-    if (errorData.msg === "No se encontraron registros para esta CURP.") {
-      return {
-        company: "Newww",
-        lines: [],
-        possibleProviders,
-        isRegistered: false,
-      };
-    }
+    return {
+      company: "Newww",
+      lines: [],
+      possibleProviders,
+      isRegistered: false,
+    };
   }
 
   if (!validationResponse.ok) {

@@ -1,53 +1,87 @@
-import { CheckCircle2, Lock } from "lucide-react";
-import { SECURITY_BULLETS } from "@/lib/data/content";
+import {
+  ArrowUpRight,
+  CheckCircle2,
+  Database,
+  EyeOff,
+  Github,
+  Lock,
+} from "lucide-react";
 
 export function SecuritySection() {
   return (
-    <div className="pt-4">
-      <div className="grid md:grid-cols-2 gap-8 items-start">
-        <div>
-          <Lock className="w-8 h-8 text-zinc-900 mb-4" />
-          <p className="text-zinc-600 leading-relaxed mb-6 text-sm">
-            No contamos con una base de datos de usuarios; cada consulta
-            orquesta conexiones cifradas de punto a punto con los registros
-            oficiales de las operadoras. Si notas un historial de búsquedas,
-            <strong> solo se guarda localmente en tu navegador</strong>{" "}
-            (LocalStorage), jamás toca nuestros servidores.
-          </p>
-          <ul className="space-y-3">
-            {SECURITY_BULLETS.map((item) => (
+    <div className="pt-5">
+      <div className="grid items-stretch gap-6 md:grid-cols-[1.1fr_0.9fr]">
+        <div className="flex flex-col">
+          <div className="flex items-start gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700">
+              <Lock className="h-5 w-5" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-zinc-900">
+                Tu información sigue bajo tu control
+              </h3>
+              <p className="mt-1 text-sm leading-6 text-zinc-600">
+                Usamos tu CURP únicamente para realizar la consulta que
+                solicitas. No necesitas registrarte ni crear una cuenta.
+              </p>
+            </div>
+          </div>
+
+          <ul className="mt-6 grid gap-3 sm:grid-cols-2">
+            {[
+              "Conexiones protegidas mediante HTTPS",
+              "Historial guardado solo en tu navegador",
+              "Sin perfiles ni publicidad personalizada",
+              "Resultados con límites claramente indicados",
+            ].map((item) => (
               <li
                 key={item}
-                className="flex items-center gap-3 text-sm text-zinc-700"
+                className="flex items-start gap-2.5 text-sm leading-5 text-zinc-700"
               >
-                <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />{" "}
+                <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" />
                 {item}
               </li>
             ))}
           </ul>
-          <p className="text-sm text-zinc-500 mt-6">
-            Puedes revisar el código y validar cómo operamos en nuestro
-            repositorio público de GitHub:{" "}
-            <a
-              href="https://github.com/moraxh/MisLineas"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-zinc-900 font-medium underline underline-offset-4 hover:opacity-80 transition-opacity"
-            >
-              github.com/moraxh/MisLineas
-            </a>
-            .
-          </p>
+
+          <a
+            href="https://github.com/moraxh/MisLineas"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-6 inline-flex w-fit items-center gap-2 text-sm font-medium text-zinc-900 underline decoration-zinc-300 underline-offset-4 transition-colors hover:decoration-zinc-900"
+          >
+            <Github className="h-4 w-4" />
+            Revisar el código fuente
+            <ArrowUpRight className="h-3.5 w-3.5" />
+          </a>
         </div>
-        <div className="bg-zinc-900 text-white border border-zinc-800 rounded-2xl p-6 shadow-xl">
-          <div className="flex justify-between items-center text-xs font-mono text-zinc-400 mb-4 pb-4 border-b border-zinc-700">
-            <span>STATUS: SECURE</span>
-            <span className="text-emerald-400">● ENCRYPTED TUNNEL</span>
+
+        <div className="overflow-hidden rounded-2xl bg-zinc-950 text-white shadow-lg shadow-zinc-950/10">
+          <div className="border-b border-white/10 px-5 py-4">
+            <p className="text-xs font-medium uppercase tracking-[0.16em] text-zinc-400">
+              Qué se conserva
+            </p>
           </div>
-          <div className="space-y-4">
-            <div className="h-2 bg-zinc-800 rounded w-3/4" />
-            <div className="h-2 bg-zinc-800 rounded w-5/6" />
-            <div className="h-2 bg-zinc-800 rounded w-1/2" />
+          <div className="divide-y divide-white/10">
+            <div className="flex gap-3 px-5 py-4">
+              <EyeOff className="mt-0.5 h-5 w-5 shrink-0 text-emerald-400" />
+              <div>
+                <p className="text-sm font-medium">En nuestros servidores</p>
+                <p className="mt-1 text-xs leading-5 text-zinc-400">
+                  No guardamos tu CURP ni creamos un expediente personal.
+                </p>
+              </div>
+            </div>
+            <div className="flex gap-3 px-5 py-4">
+              <Database className="mt-0.5 h-5 w-5 shrink-0 text-sky-400" />
+              <div>
+                <p className="text-sm font-medium">En tu navegador</p>
+                <p className="mt-1 text-xs leading-5 text-zinc-400">
+                  Solo el historial que ves en el formulario, para facilitar
+                  consultas posteriores.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>

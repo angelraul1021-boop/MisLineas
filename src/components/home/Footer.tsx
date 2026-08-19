@@ -84,9 +84,9 @@ export function Footer() {
         </a>
       </div>
       <p className="text-center text-xs text-zinc-400 max-w-2xl mx-auto">
-        Las donaciones son voluntarias y se destinan únicamente a cubrir
-        costos de infraestructura (hosting, dominio y proxies). MisLíneas
-        sigue siendo un proyecto sin fines de lucro.
+        Las donaciones son voluntarias y se destinan únicamente a cubrir costos
+        de infraestructura (hosting, dominio y proxies). MisLíneas sigue siendo
+        un proyecto sin fines de lucro.
       </p>
     </footer>
   );

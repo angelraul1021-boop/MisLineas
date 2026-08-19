@@ -5,7 +5,6 @@ import { useState } from "react";
 import {
   getOperatorDisplayStatus,
   OPERATOR_STATUS_LABELS,
-  OPERATOR_STATUS_STYLES,
   OPERATORS,
   type OperatorDisplayStatus,
 } from "@/lib/data/operators";
@@ -69,23 +68,15 @@ export function OperatorsSection() {
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-2 text-xs">
-        <span className="px-2.5 py-1 rounded-full border bg-zinc-50 text-zinc-700">
-          Total: {OPERATORS.length}
-        </span>
-        <span
-          className={`px-2.5 py-1 rounded-full border ${OPERATOR_STATUS_STYLES.supported}`}
-        >
+      <div className="flex flex-wrap gap-x-4 gap-y-2 border-y border-zinc-200 py-3 text-xs text-zinc-600">
+        <span>Total: {OPERATORS.length}</span>
+        <span className="text-emerald-700">
           Soportadas: {operatorCounts.supported}
         </span>
-        <span
-          className={`px-2.5 py-1 rounded-full border ${OPERATOR_STATUS_STYLES.unsupported}`}
-        >
+        <span className="text-red-700">
           No soportadas: {operatorCounts.unsupported}
         </span>
-        <span
-          className={`px-2.5 py-1 rounded-full border ${OPERATOR_STATUS_STYLES.pending}`}
-        >
+        <span className="text-amber-700">
           Pendientes: {operatorCounts.pending}
         </span>
       </div>
@@ -111,9 +102,16 @@ export function OperatorsSection() {
                         </p>
                       ) : null}
                     </div>
-                    <span
-                      className={`text-[11px] font-medium px-2 py-0.5 rounded-full border ${OPERATOR_STATUS_STYLES[displayStatus]}`}
-                    >
+                    <span className="inline-flex shrink-0 items-center gap-1.5 text-[11px] font-medium text-zinc-600">
+                      <span
+                        className={`h-1.5 w-1.5 rounded-full ${
+                          displayStatus === "supported"
+                            ? "bg-emerald-500"
+                            : displayStatus === "unsupported"
+                              ? "bg-red-500"
+                              : "bg-amber-500"
+                        }`}
+                      />
                       {OPERATOR_STATUS_LABELS[displayStatus]}
                     </span>
                   </div>

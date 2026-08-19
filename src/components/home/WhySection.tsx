@@ -7,7 +7,9 @@ export function WhySection() {
       <section className="grid sm:grid-cols-3 gap-6">
         <div className="sm:col-span-3 mb-2">
           <p className="text-zinc-600">
-            Centralizamos la fragmentación del ecosistema móvil mexicano.
+            Las compañías de telefonía tienen plataformas separadas. MisLíneas
+            te ayuda a reunir sus respuestas, sin ocultar cuándo una consulta
+            requiere revisión manual.
           </p>
         </div>
         {WHY_CARDS.map((card) => (
@@ -28,8 +30,8 @@ export function WhySection() {
             ¿Cómo funciona por debajo?
           </h2>
           <p className="text-zinc-600 text-sm">
-            Nuestro proceso es completamente transparente. Creemos que cuando
-            entiendes qué hacemos con tus datos, la confianza es natural.
+            Explicamos cada paso para que puedas distinguir entre una línea no
+            encontrada y una operadora que no pudo ser consultada.
           </p>
         </div>
         <div className="grid md:grid-cols-3 gap-8 relative">
@@ -42,8 +44,8 @@ export function WhySection() {
               1. Ingresas tu CURP
             </h3>
             <p className="text-xs text-zinc-600 max-w-[200px]">
-              Solo tú conoces este dato. Se envía cifrado a nuestro servidor
-              puente.
+              La CURP se usa como dato de consulta y se transmite mediante una
+              conexión segura.
             </p>
           </div>
           <div className="relative z-10 flex flex-col items-center text-center">
@@ -51,11 +53,11 @@ export function WhySection() {
               <Database className="w-8 h-8 text-black" />
             </div>
             <h3 className="font-bold text-zinc-900 mb-2">
-              2. Consulta Oficial
+              2. Consultamos plataformas
             </h3>
             <p className="text-xs text-zinc-600 max-w-[200px]">
-              Hacemos la misma consulta pública que tú harías en las páginas de
-              Telcel, AT&T, etc.
+              Intentamos las consultas disponibles de las operadoras, sin
+              presentar a MisLíneas como una autoridad.
             </p>
           </div>
           <div className="relative z-10 flex flex-col items-center text-center">
@@ -63,11 +65,11 @@ export function WhySection() {
               <FileX className="w-8 h-8 text-black" />
             </div>
             <h3 className="font-bold text-zinc-900 mb-2">
-              3. Destrucción de Datos
+              3. Resultados con contexto
             </h3>
             <p className="text-xs text-zinc-600 max-w-[200px]">
-              Te mostramos los resultados y destruimos tu CURP. Nada se guarda
-              en bases de datos.
+              Te mostramos las líneas, las respuestas sin coincidencias y las
+              operadoras que requieren una revisión adicional.
             </p>
           </div>
         </div>

@@ -18,26 +18,26 @@ export const WHY_CARDS: { icon: LucideIcon; title: string; body: string }[] = [
   {
     icon: Zap,
     title: "Un solo lugar",
-    body: "Antes tenías que buscar en más de 100 sitios web diferentes. Hoy solo necesitas ingresar tu CURP aquí.",
+    body: "En lugar de visitar una por una las plataformas de las compañías, ingresas tu CURP una sola vez y reúnes las respuestas disponibles.",
   },
   {
     icon: Scale,
-    title: "Protección Federal",
-    body: "Procesos bajo la Ley Federal de Telecomunicaciones. Orquestación efímera y segura.",
+    title: "Basado en fuentes oficiales",
+    body: "Consultamos las plataformas que cada operadora pone a disposición. MisLíneas es independiente y no sustituye a la CRT ni a las compañías.",
   },
   {
     icon: Eye,
-    title: "Transparencia Total",
-    body: "No somos una operadora ni vendemos planes. Solo devolvemos la información a su dueño: el ciudadano.",
+    title: "Resultados honestos",
+    body: "Te mostramos qué operadoras respondieron, cuáles no están disponibles y cuándo necesitas continuar la revisión directamente.",
   },
 ];
 
 export const SECURITY_BULLETS = [
   "Conexiones cifradas en tránsito (TLS/HTTPS).",
-  "Sesión destruida automáticamente.",
-  "No guardamos datos personales ni historiales.",
-  "No almacenamos CURP ni números.",
-  "Cumplimiento de privacidad.",
+  "No necesitas crear una cuenta.",
+  "El historial de consultas se guarda solo en tu navegador.",
+  "No usamos la CURP para crear perfiles o enviar publicidad.",
+  "Los resultados indican sus límites y posibles pendientes.",
   "Proyecto open source y auditable.",
 ];
 
@@ -49,6 +49,7 @@ export const ARCO_RIGHTS = [
 ];
 
 export const TOTAL_PROVIDERS = 104;
+export const TOTAL_QUERIES = 150000;
 export const QUERY_TIMEOUT_MS = 15000;
 
 // Hard ceiling on a single provider request. Must stay below the client

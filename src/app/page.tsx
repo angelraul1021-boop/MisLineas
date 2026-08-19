@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertTriangle, Server } from "lucide-react";
+import { AlertTriangle, ArrowUpRight } from "lucide-react";
 import { AnimatePresence } from "motion/react";
 import type React from "react";
 import { useState } from "react";
@@ -58,34 +58,23 @@ export default function MisLineas() {
   };
 
   return (
-    <div className="min-h-screen bg-[linear-gradient(180deg,#fafaf9_0%,#f4f4f5_40%,#ffffff_100%)] font-sans text-zinc-900 selection:bg-zinc-900 selection:text-white">
-      <div className="flex items-center justify-center gap-3 border-b border-emerald-400/60 bg-[linear-gradient(90deg,#059669_0%,#047857_100%)] px-4 py-3 text-sm text-white">
-        <Server className="w-5 h-5 shrink-0" />
-        <p className="text-center max-w-4xl font-medium">
-          <strong>Migramos de servidor de nuevo.</strong> Cambiamos de proveedor
-          para reducir costos de hosting a $0 y mejorar la velocidad de las
-          consultas. Si notas algo raro, repórtalo.
-        </p>
-      </div>
-
-      <div className="flex items-center justify-center gap-3 border-b border-amber-300/60 bg-[linear-gradient(90deg,#d97706_0%,#b45309_100%)] px-4 py-3 text-sm text-white">
-        <AlertTriangle className="w-5 h-5 shrink-0" />
-        <p className="text-center max-w-4xl font-medium">
-          <strong>Aviso Telcel.</strong> En algunos casos, una línea Telcel
-          puede no aparecer ni aquí ni en el portal oficial, incluso cuando el
-          usuario cree que ya la registró. Esto puede significar que la línea no
-          quedó bien vinculada o que hubo un fallo de Telcel, así que conviene
-          revisarlo con cuidado en{" "}
-          <a
-            href="https://registro.telcel.com/vinculatulinea/#/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline underline-offset-2 hover:text-amber-100"
-          >
-            registro.telcel.com/vinculatulinea
-          </a>
-          .
-        </p>
+    <div className="min-h-screen bg-[linear-gradient(180deg,#fafaf9_0%,#f4f4f5_42%,#ffffff_100%)] font-sans text-zinc-900 selection:bg-zinc-900 selection:text-white">
+      <div className="border-b border-amber-200 bg-amber-50 px-4 py-2.5 text-sm text-amber-950">
+        <div className="mx-auto flex max-w-6xl items-center justify-center gap-2.5">
+          <AlertTriangle className="h-4 w-4 shrink-0 text-amber-600" />
+          <p className="line-clamp-2 text-center sm:line-clamp-1">
+            <strong>Aviso Telcel:</strong> algunas líneas pueden no aparecer
+            aunque ya estén registradas.{" "}
+            <a
+              href="https://registro.telcel.com/vinculatulinea/#/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 font-semibold underline decoration-amber-400 underline-offset-2 hover:text-amber-700"
+            >
+              Revisar vinculación <ArrowUpRight className="h-3.5 w-3.5" />
+            </a>
+          </p>
+        </div>
       </div>
 
       <div aria-live="polite" aria-atomic="true" className="sr-only">
@@ -103,7 +92,10 @@ export default function MisLineas() {
 
       <Navbar />
 
-      <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 md:py-12">
+      <main
+        id="contenido"
+        className="mx-auto max-w-5xl px-4 py-8 sm:px-6 md:py-12"
+      >
         <section className="mx-auto max-w-3xl space-y-6">
           <Hero />
           <CurpForm
@@ -120,7 +112,7 @@ export default function MisLineas() {
           <Notices />
         </section>
 
-        <section className="mx-auto mt-8 max-w-5xl">
+        <section className="mt-10" aria-label="Resultados de la consulta">
           <AnimatePresence mode="wait">
             {!results && !loading && !timedOut ? (
               <EmptyState />
@@ -138,11 +130,11 @@ export default function MisLineas() {
           </AnimatePresence>
         </section>
 
-        <div className="mt-20 space-y-12">
+        <div className="mt-16 space-y-12 md:mt-20">
           <OperatorsSection />
 
-          <div className="max-w-4xl mx-auto space-y-4">
-            <h2 className="text-xl font-bold text-zinc-900 mb-6 px-2 text-center md:text-left">
+          <div className="mx-auto max-w-4xl space-y-4">
+            <h2 className="mb-6 px-2 text-center text-xl font-bold text-zinc-900 md:text-left">
               Centro de Información
             </h2>
             <AccordionItem title="¿Por qué usar MisLíneas y cómo funciona?">
