@@ -5,7 +5,6 @@ import type { NextRequest } from "next/server";
 import { corsHeaders, corsPreflight } from "@/lib/cors";
 import {
   lookupCURPINMobig,
-  lookupCURPINYoMobile,
   lookupCURPInABIB,
   lookupCURPInAltanMVNO,
   lookupCURPInBeneleit,
@@ -121,10 +120,15 @@ const providers: Array<{
     provider: "Freedompop",
     lookupFunction: lookupCURPInFreedompop,
   },
-  {
-    provider: "Yo Mobile",
-    lookupFunction: lookupCURPINYoMobile,
-  },
+  // {
+  //   provider: "Yo Mobile",
+  //   lookupFunction: lookupCURPINYoMobile,
+  //   // Disabled: Cloudflare's managed challenge on play.prod.yomobile.xyz
+  //   // started returning 403 for every request regardless of origin — same
+  //   // result from a residential proxy, from this server directly, and from
+  //   // an unrelated home network with no proxy at all, so it isn't IP-based.
+  //   // Re-enable once it's confirmed passing again.
+  // },
 ];
 
 export async function OPTIONS(req: NextRequest) {

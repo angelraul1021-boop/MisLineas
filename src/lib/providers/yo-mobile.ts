@@ -1,6 +1,7 @@
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { PROVIDER_TIMEOUT_MS } from "@/lib/data/content";
+import { getResidentialProxyUrl } from "@/lib/proxy";
 import { stripCURPs } from "@/lib/sanitize";
 import type { LineResult } from "@/types";
 
@@ -16,14 +17,22 @@ const UA =
 // plain curl always got 200. curl-impersonate's TLS fingerprint doesn't fool
 // it either, so this shells out to the real curl binary via execFile (argv
 // array, no shell — the CURP never touches a shell string).
+//
+// Separately, Cloudflare can also flag the *IP* itself (managed challenge
+// regardless of TLS fingerprint) once it's seen enough automated traffic —
+// route through the residential proxy when configured to dodge that too.
 export async function lookupCURPINYoMobile(curp: string): Promise<LineResult> {
   try {
+    const proxyUrl = getResidentialProxyUrl();
+    const proxyArgs = proxyUrl ? ["--proxy", proxyUrl] : [];
+
     const { stdout } = await execFileAsync(
       "curl",
       [
         "-s",
         "--max-time",
         String(Math.ceil(PROVIDER_TIMEOUT_MS / 1000)),
+        ...proxyArgs,
         `https://play.prod.yomobile.xyz/api/v1.0/crm/lines/by-personal-id/${curp}/`,
         "-H",
         "accept: application/json",
