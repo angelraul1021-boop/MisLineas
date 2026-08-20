@@ -43,8 +43,18 @@ export function OperatorsSection() {
             Estado de Operadoras
           </h2>
           <p className="text-zinc-600">
-            Listado completo y actualizado de operadoras con su estado de
-            integracion.
+            Listado completo de operadoras con su estado de integración. Se
+            actualiza directamente en el código del proyecto conforme cambia la
+            cobertura;{" "}
+            <a
+              href="https://github.com/moraxh/MisLineas/commits/main/src/lib/data/operators.ts"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline underline-offset-2 hover:text-zinc-900"
+            >
+              revisa el historial de cambios
+            </a>
+            .
           </p>
         </div>
         <div className="w-full lg:w-80">

@@ -154,7 +154,7 @@ export function ResultsPanel({
 
       if (!integrity.signed) {
         setExportMessage(
-          "Archivo exportado sin firma criptografica. Configura EXPORT_SIGNING_SECRET para habilitarla.",
+          "El archivo se descargó, pero sin firma criptográfica: por ahora no sirve como comprobante verificable ante una operadora, solo como referencia personal.",
         );
       }
     } catch (error) {

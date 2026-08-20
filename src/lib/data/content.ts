@@ -1,18 +1,4 @@
-import {
-  Building2,
-  Eye,
-  type LucideIcon,
-  Scale,
-  Signal,
-  Wifi,
-  Zap,
-} from "lucide-react";
-
-export const KNOWN_PROVIDERS: { name: string; icon: LucideIcon }[] = [
-  { name: "Telcel", icon: Signal },
-  { name: "AT&T", icon: Wifi },
-  { name: "+80 MVNOs (Red Altan)", icon: Building2 },
-];
+import { Eye, type LucideIcon, Scale, Zap } from "lucide-react";
 
 export const WHY_CARDS: { icon: LucideIcon; title: string; body: string }[] = [
   {

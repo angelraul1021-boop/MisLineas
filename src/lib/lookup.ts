@@ -151,6 +151,7 @@ export function getRiskLevel(lines: DisplayLine[]): {
   label: string;
   color: string;
   description: string;
+  reason: string;
 } {
   const confirmed = lines.filter(
     (l) => !l.isPossible && !l.isNotFound && !l.isError && !l.isUnavailable,
@@ -163,16 +164,22 @@ export function getRiskLevel(lines: DisplayLine[]): {
       label: "Sin Registro",
       color: "bg-slate-400",
       description: "Sin líneas vinculadas",
+      reason: "No se encontraron líneas confirmadas ni posibles.",
     };
   if (confirmed <= 2 && possible === 0)
     return {
       label: "Bajo",
       color: "bg-emerald-500",
       description: "Identidad protegida y consistente",
+      reason: `${confirmed} ${confirmed === 1 ? "línea confirmada" : "líneas confirmadas"}, dentro de lo esperado para una persona.`,
     };
   return {
     label: "Moderado",
     color: "bg-amber-500",
     description: "Revisar líneas detectadas",
+    reason:
+      confirmed > 2
+        ? `${confirmed} líneas confirmadas a tu nombre. Si no las reconoces todas, revísalas antes de descartar nada.`
+        : `${possible} ${possible === 1 ? "coincidencia posible" : "coincidencias posibles"} sin confirmar. No es una alerta de fraude, solo un caso que conviene revisar.`,
   };
 }

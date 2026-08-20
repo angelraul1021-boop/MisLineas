@@ -137,9 +137,11 @@ export function ResultsHeader({
       </div>
 
       <p className="mt-4 text-xs leading-relaxed text-zinc-500">
-        El estatus de riesgo es una guía rápida basada en las líneas detectadas
-        durante esta consulta. No confirma fraude por sí solo: sirve para
-        indicar si conviene revisar con más detalle los resultados.
+        <span className="font-medium text-zinc-600">
+          ¿Por qué este estatus?
+        </span>{" "}
+        {riskLevel.reason} Es una guía basada solo en esta consulta, no una
+        confirmación de fraude.
       </p>
     </div>
   );

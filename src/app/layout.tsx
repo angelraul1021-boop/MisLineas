@@ -43,7 +43,6 @@ export const metadata: Metadata = {
     "CURP",
     "Líneas telefónicas",
     "Telcel",
-    "AT&T",
     "Altán Redes",
     "México",
     "Operadoras",
