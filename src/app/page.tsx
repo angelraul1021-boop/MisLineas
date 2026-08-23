@@ -59,6 +59,25 @@ export default function MisLineas() {
 
   return (
     <div className="min-h-screen bg-[linear-gradient(180deg,#fafaf9_0%,#f4f4f5_42%,#ffffff_100%)] font-sans text-zinc-900 selection:bg-zinc-900 selection:text-white">
+      <div className="border-b border-red-800 bg-red-600 px-4 py-2.5 text-sm text-white">
+        <div className="mx-auto flex max-w-6xl items-center justify-center gap-2.5">
+          <AlertTriangle className="h-4 w-4 shrink-0 text-white" />
+          <p className="line-clamp-2 text-center sm:line-clamp-1">
+            <strong>Aviso Sorcel:</strong> un bloqueo de bots del proveedor
+            causó falsos positivos (líneas marcadas como registradas sin
+            estarlo). Ya quedó corregido.{" "}
+            <a
+              href="https://www.soriup.mx/consultavinculacion.html"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 font-semibold underline decoration-white/60 underline-offset-2 hover:text-red-100"
+            >
+              Verificar directamente <ArrowUpRight className="h-3.5 w-3.5" />
+            </a>
+          </p>
+        </div>
+      </div>
+
       <div className="border-b border-amber-200 bg-amber-50 px-4 py-2.5 text-sm text-amber-950">
         <div className="mx-auto flex max-w-6xl items-center justify-center gap-2.5">
           <AlertTriangle className="h-4 w-4 shrink-0 text-amber-600" />
