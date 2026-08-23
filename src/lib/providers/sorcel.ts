@@ -54,6 +54,30 @@ export async function lookupCURPInSorcel(curp: string): Promise<LineResult> {
       };
     }
 
+    // Only treat the response as a hit when it's actually the results table
+    // Sorcel renders for a match. Anything else — a Cloudflare challenge page,
+    // a 5xx error page, an unrelated HTML blob — must NOT default to
+    // isRegistered: true, since that string's absence alone isn't proof of a
+    // match and was producing false positives.
+    const hasResultsTable =
+      /Listado de líneas/.test(stdout) && /<table class="esp"/.test(stdout);
+
+    if (!hasResultsTable) {
+      console.error(
+        "[sorcel] unrecognized response (not a results table nor a 'no records' page):",
+        stdout.slice(0, 500),
+      );
+      return {
+        company: "Sorcel",
+        lines: [],
+        error: "Unrecognized response from Sorcel",
+        rawApiResponse: {
+          responseType: "html",
+          snippet: stdout.slice(0, 500),
+        },
+      };
+    }
+
     console.log("[sorcel] registered response (HTML text):", stdout);
     return {
       company: "Sorcel",
